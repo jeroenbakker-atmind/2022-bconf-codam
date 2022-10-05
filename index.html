@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+		<title>Onboarding Eevee/Viewport module</title>
 
 		<link rel="stylesheet" href="dist/reset.css">
 		<link rel="stylesheet" href="dist/reveal.css">
@@ -12,20 +12,507 @@
 
 		<!-- Theme used for syntax highlighted code -->
 		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+		<script src="plugin/highlight/highlight.js"></script>
+		<script>
+  Reveal.initialize({
+    plugins: [ RevealHighlight ]
+  });
+		</script>
 	</head>
 	<body>
+		<style>
+			code {
+				max-height:inherit !important;
+			}
+		</style>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2
-						<aside class="notes">
-						<p>Some notes</p>
-						</aside>
-						<p>Some slide text</p>
-						<aside class="notes">
-						<p>and some more notes</p>
-					</aside>
+				<section>
+					<h3>Blender Eevee/Viewport module</h3>
+					<h2>GPU development onboarding</h2>
+					<p>Jeroen Bakker - jeroen@blender.org</p>
 				</section>
+
+				<section>
+					<p>TODO: add latest video of project heist.</p>
+				</section>
+
+				<section>
+					<h1>Blender</h1>
+				</section>
+
+				<section>
+					<section>
+						<h3>Blender</h3>
+						<li>
+							<ul>Community driven open source content creation suite</ul>
+							<ul>Everyone should be free to create 3D CG content, with free technical and creative production means and free access to markets</ul>
+						</li>
+					</section>
+
+					<section>
+						<h3>How did I start?</h3>
+						<ul>
+							<li>Highly interested in how things work.</li>
+							<li>Always worked on performance related projects.</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>My role</h3>
+						<ul>
+							<li>Vision: Interactive performance</li>
+							<li>Everything that a user does should become interactive but still able to handle complexity</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Project: Workbench-engine</h3>
+					</section>
+
+					<section>
+						<h3>Project: Image editor</h3>
+					</section>
+
+					<section>
+						<h3>Project: Texture painting</h3>
+					</section>
+				</section>
+
+				<section data-visibility="hidden">
+					<section>
+						<h2>Platform</h2>
+					</section>
+
+					<section>
+						<h3>What is a platform?</h3>
+						<ul>
+							<li>Operating System</li>
+							<ul>
+								<li>Windows, macOS, Linux</li>
+							</ul>
+							<li>GPU Vendor</li>
+							<ul>
+								<li>Apple, AMD, Intel, NVIDIA, ...</li>
+							</ul>
+							<li>GPU driver</li>
+							<ul>
+								<li>Closed source, Open source, Software emulation</li>
+							</ul>
+						</ul>
+						<p>Your programs will behave differently!</p>
+					</section>
+				</section>
+
+				<!-- GPU overview -->
+				<section>
+					<h1>GPU overview</h1>
+				</section>
+
+				<section>
+					<section>
+						<h2>GPU Architectures</h2>
+					</section>
+
+					<section>
+						<h3>Discrete GPUs</h3>
+						<p>TODO: Add overview how discrete GPUs are build</P>
+					</section>
+					<section>
+						<h3>Integrated GPU</h3>
+						<p>TODO: Add overview how integrated GPUs are build</P>
+					</section>
+					<section>
+						<h3>Apple Silicon</h3>
+						<p>TODO: Add overview how Apple GPUs are build</P>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Graphic Libraries (GL)</h2>
+						<ul>
+							<li>OpenGL</li>
+							<li>Vulkan</li>
+							<li>DirectX</li>
+							<li>Metal</li>
+						</ul>
+					</section>
+
+					<section data-visibility="hidden">
+						<h3>Pipelines</h3>
+						<ul>
+							<li>Graphic pipeline</li>
+							<li>Compute pipeline</li>
+						</ul>
+					</section>
+
+					<section>
+						<img src="resources/graphics-pipeline.png" />
+					</section>
+
+					<section>
+						<h3>Example vertex shader</h3>
+						<pre><code data-line-numbers="|1-3|5-6|11-15|8-9|" class="language-glsl">/* Data read from geometry buffers. */
+in vec3 in_position;
+in vec3 in_color;
+
+/* Parameter for this program. */
+uniform mat4 transform_matrix;
+
+/* Data needed by the fragment shader. */
+out vec3 color;
+
+void main() {
+	gl_Position = transform_matrix * in_position;
+	out_color = in_color;
+}</code></pre>
+
+						
+					</section>
+					<section>
+						<h3>Example fragment shader</h3>
+						<pre><code data-line-numbers="|1-2|4-6" class="language-glsl">/* Variable data received from vertex shader, interpolated. */
+in vec3 color;
+
+void main() {
+	gl_FragColor = color;
+}</code></pre>
+
+						
+					</section>
+
+					<section>
+						<h3>Steps</h3>
+						<ul>
+							<li>Compile a vertex+fragment shader into a program</li>
+							<li>Activate program</li>
+							<li>Upload the input data (textures, geometry)</li>
+							<li>Setup your render target</li>
+							<li>Invoke a draw command</li>
+						</ul>
+					</section>
+
+					<section data-visibility="hidden">
+						<h3>Compute pipeline</h3>
+						<ul>
+							<li>Compute Shader</li>
+						</ul>
+					</section>
+				</section>
+
+
+
+				<!-- DEBUGGING -->
+
+				<section>
+					<h1>Debugging</h1>
+				</section>
+
+				<section>
+					<section>
+						<h2>Debugging</h2>
+					</section>
+
+					<section>
+						<h3>Debugging techniques</h3>
+
+						<ul>
+							<li><code>printf</code> debugging</li>
+							<li>Step through debugger</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>use fragment shader to output data.</h3>
+					</section>
+
+					<section>
+						<h3>Renderdoc</h3>
+						<ul>
+							<li>Open source GPU debugger.</li>
+							<li>Original created by Crytek developer.</li>
+							<li>Not supported by Apple...</li>
+						</ul>
+
+					</section>
+
+					<section>
+						TODO: overview blender frame
+					</section>
+
+					<section>
+						TODO: overview eevee-draw calls (video)
+					</section>
+
+					<section>
+						TODO: Pipeline - geometry
+					</section>
+					<section>
+						TODO: Pipeline - fragment
+					</section>
+					<section>
+						TODO: Pipeline - framebuffer
+					</section>
+				</section>
+
+				<!-- PERFORMANCE -->
+
+				<section>
+					<h1>Performance</h1>
+				</section>
+
+				<section>
+					<section>
+						<h3>Instruction set</h3>
+						<ul>
+							<li>X86 has ten-thousands instructions. <a hred="https://en.wikipedia.org/wiki/X86_instruction_listings">https://en.wikipedia.org/wiki/X86_instruction_listings</a></li>
+							<li class="fragment">GPUs (depending on platform) several hundreds.</li>
+							<li class="fragment">Not standardized</li>
+							<li class="fragment">SIMD: Single Instruction Multiple Data</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>SISD</h2>
+						<pre><code data-line-numbers class="language-glsl">vec3 mix_two_colors(
+		const vec3 src1, const vec3 src2, const float mix_factor)
+{
+	vec3 result;
+	float inverse_mix_factor = 1.0 - mix_factor;
+	result.r = src1.r * inverse_mix_factor + src2.r * mix_factor;
+	result.g = src1.g * inverse_mix_factor + src2.g * mix_factor;
+	result.b = src1.b * inverse_mix_factor + src2.b * mix_factor;
+	return result;
+}</code></pre>
+					</section>
+
+					<section>
+						<h2>SIMD</h2>
+						<pre><code data-line-numbers class="language-glsl">vec3 mix_two_colors(
+		const vec3 src1, const vec3 src2, const float mix_factor)
+{
+	float inverse_mix_factor = 1.0 - mix_factor;
+	vec3 result = src1 * inverse_mix_factor + src2 * mix_factor;
+	return result;
+}</code></pre>
+						<pre class="fragment"><code data-line-numbers class="language-glsl">vec3 mix_two_colors(
+		const vec3 src1, const vec3 src2, const float mix_factor)
+{
+	float inverse_mix_factor = 1.0 - mix_factor;
+	vec3 result = src1 * vec3(inverse_mix_factor) +
+			src2 * vec3(mix_factor);
+	return result;
+}</code></pre>
+					</section>
+
+				</section>
+				<section>
+					<section>
+						<h3>Register spilling</h3>
+					</section>
+
+					<section data-visibility="hidden">
+						<h3>Global memory</h3>
+						<ul>
+							<li>Geometry, textures, ...</li>
+							<li>Fixed texture units/samplers</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Compute units</h3>
+						<ul>
+							<li>Multiple cores are grouped in Compute Units (CU).</li>
+							<li>Each CU has small amount of fixed memory called local memory.</li>
+							<li>Program/driver can give each core a part of this memory.</li>
+							<li>FE: 64KB per CU with 64 cores per CU would lead to around 1KB of local memory per core.</li>
+							<li>Register splilling</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Measurements against register spilling</h3>
+						<ul>
+							<li>Split the complex shaders into multiple less complex shaders.</li>
+							<li>Share data that do not change.</li>
+							<li>Optimize complex shader to use less memory.</li>
+							<ul>
+								<li>Re-calculate data.</li>
+								<li>Data encoding techniques.</li>
+							</ul>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Data encoding - barycentric coordinates</h3>
+						<pre><code data-line-numbers="|9-12|14-17" class="language-glsl">/* 
+ * The 3 components of a barycentric coordinate always adds
+ * up to 1.0.
+ *
+ * To free up some memory we only need to store 2 of its
+ * components. The third component can be calculated on the
+ * fly when needed.
+ */
+vec2 encode_barycentric_coordinates(vec3 decoded_coords)
+{
+	return vec2(vec3.xy);
+}
+
+vec3 decode_barycentric_coordinates(vec2 encoded_coords)
+{
+	return vec3(vec2.xy, 1.0 - vec2.x - vec2.y);
+}</code></pre>
+					</section>
+					<section>
+					<h3>Data encoding - use bitmasks</h3>
+						<pre><code data-line-numbers="|1,4-11|2,13-20" class="language-glsl">#define FLAG_COLOR (1<<0)
+#define FLAG_NORMAL (1<<1)
+
+bool use_colors(int flags)
+{
+	return flag & FLAG_COLOR;
+}
+int set_colors(int flags, bool use)
+{
+	return (flags & ~FLAG_COLOR) | (use ? FLAG_COLOR : 0); 
+}
+
+bool use_normals(int flags)
+{
+	return flag & FLAG_NORMAL;
+}
+int set_normals(int flags, bool use)
+{
+	return (flags & ~FLAG_NORMAL) | (use ? FLAG_NORMAL : 0); 
+}</code></pre>
+				</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Unrolling</h2>
+					</section>
+
+					<section>
+						<h3>Stack</h3>
+						<ul>
+							<li>GPUs don't use (or have) a stack to temporarily store data.</li>
+							<li></li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Function unrolling</h3>
+						<pre><code data-line-numbers class="language-glsl">vec3 color_add(const vec3 src1, const vec3 src2)
+{
+	return src1 + src2;
+}
+
+vec3 color_mul(const vec3 src1, const vec3 src2)
+{
+	return src1 * scr2;
+}
+
+vec3 color_mix(const vec3 src1, const vec3 src2, const float factor)
+{
+	float inverse_factor = 1.0 - factor;
+	return color_add(
+		color_mul(src1, vec3(inverse_factor)),
+		color_mul(src2, vec3(factor));
+}</code>
+					</section>
+				<section>
+					<pre><code data-line-numbers class="language-glsl">vec3 color_mix(const vec3 src1, const vec3 src2, const float factor) {
+	return src1 * vec3(1.0 - factor) + src2 * vec3(factor);
+}</code>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Branching</h2>
+					</section>
+
+					<section>
+						<pre><code data-line-numbers="|3-9|11-12" class="language-glsl">vec4 alpha_over(const vec4 src1, const vec4 src2)
+{
+	/* Early exit to skip expensive calculations. */
+	if (src2.a == 1.0) {
+		return src2;
+	} 
+	if (src2.a == 0.0) {
+		return src1;
+	}
+
+	float inverse_alpha = 1.0 - src2.a;
+	return src1 * inverse_alpha + src2;
+}</code></pre>
+					</section>
+
+					<section>
+						<h3>What the compiler makes out of it.</h3>
+						<pre><code data-line-numbers="|3-7|6-7|9-11" class="language-glsl">vec4 alpha_over(const vec4 src1, const vec4 src2)
+{
+	/* Calculate all branches. */
+	vec4 __branch_1_result = src2;
+	vec4 __branch_2_result = src1;
+	vec4 __tmp0 = __vec4_from_float(1.0 - src2.a);
+	vec4 __branch_3_result = __multiply_add(src1, __tmp0, src2);
+
+	/* Based on alpha check which branch should be selected. */
+	vec4 __result = (src2.a == 1.0) ? __branch_1_result: (
+		(src2.a == 0.0) ? __branch_2_result: __branch_3_result);
+
+	return __result;
+}
+</code></pre>
+					</section>
+
+					<section>
+						<h3>Why does a compiler do this?</h3>
+						<ul>
+							<li>A single core works on 4 instructions at the same time.</li>
+							<li>When executing an instruction, the previous is stored, the next is loaded and the next after that is decoded.</li>
+							<li>When during execution the incorrect next instruction is loaded/decoded, this work needs to be redone for the correct instruction.</li>
+							<li>Selecting the incorrect instruction could lead to 200-400 clock cycles waisted.</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Go branchless!</h3>
+						<pre><code data-line-numbers class="language-glsl">vec4 alpha_over(const vec4 src1, const vec4 src2)
+{
+	float inverse_alpha = 1.0 - src2.a;
+	return src1 * inverse_alpha + src2;
+}</code></pre>
+						<pre class="fragment"><code data-line-numbers class="language-glsl">vec4 alpha_over(const vec4 src1, const vec4 src2)
+{
+	vec4 __tmp0 = __vec4_from_float(1.0 - src2.a);
+	vec4 __result = __multiply_add(src1, __tmp0, src2);
+	return __result;
+}</code></pre>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Add optional interactive session</h2>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Get involved!</h2>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Questions?</h2>
+					</section>
+				</section>
+
 			</div>
 		</div>
 
