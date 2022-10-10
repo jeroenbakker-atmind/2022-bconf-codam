@@ -13,16 +13,12 @@
 		<!-- Theme used for syntax highlighted code -->
 		<link rel="stylesheet" href="plugin/highlight/monokai.css">
 		<script src="plugin/highlight/highlight.js"></script>
-		<script>
-  Reveal.initialize({
-    plugins: [ RevealHighlight ]
-  });
-		</script>
 	</head>
 	<body>
 		<style>
-			code {
-				max-height:inherit !important;
+			object {
+				width:1920px;
+				height:1080px;
 			}
 		</style>
 		<div class="reveal">
@@ -205,7 +201,7 @@ void main() {
 
 				<!-- DEBUGGING -->
 
-				<section>
+				<section >
 					<h1>Debugging</h1>
 				</section>
 
@@ -264,19 +260,56 @@ void main() {
 
 				<section>
 					<section>
+						<h2>Interactive Performance</h2>
+					</section>
+
+					<section>
+						<h3>Idea</h3>
+						<ul>
+							<li>Give artists more freedom by improving performance.</li>
+							<li>Steps that artists do, are done in sequence.</li>
+							<li>When adding more performance the order becomes irrelevant.</li>
+							<li>Emerging of new and more impressive workflows.</li>
+						</ul>
+					</section>
+
+					<section data-background-video="resources/interactive-performance.mp4" data->
+					</section>
+
+					<section>
+						<h3>How</h3>
+						<ul>
+							<li>User input, Make changes, Drawing should happen within +- 100ms.</li>
+							<li>Focus on how well code scales on available hardware (both CPU and GPU).</li>
+							<li>Sometimes requires different approaches when dedicated GPU is available.</li>
+							<li>Reduce data transfers between RAM and VRAM.</li>
+						</ul>
+					</section>
+
+					<section data-background-color="grey">
+						<object data="resources/memory-components.drawio.svg" type="image/svg+xml"></object>
+					</section>
+
+				</section>
+
+				<section>
+					<section>
 						<h3>Instruction set</h3>
 						<ul>
-							<li>X86 has ten-thousands instructions. <a hred="https://en.wikipedia.org/wiki/X86_instruction_listings">https://en.wikipedia.org/wiki/X86_instruction_listings</a></li>
+							<li>X86 has ten-thousands instructions. <a href="https://en.wikipedia.org/wiki/X86_instruction_listings">https://en.wikipedia.org/wiki/X86_instruction_listings</a></li>
 							<li class="fragment">GPUs (depending on platform) several hundreds.</li>
 							<li class="fragment">Not standardized</li>
 							<li class="fragment">SIMD: Single Instruction Multiple Data</li>
 						</ul>
 					</section>
 
+					<section data-background-color="grey">
+						<object data="resources/mix-two-colors.drawio.svg" type="image/svg+xml"></object>
+					</section>
+
 					<section>
 						<h2>SISD</h2>
-						<pre><code data-line-numbers class="language-glsl">vec3 mix_two_colors(
-		const vec3 src1, const vec3 src2, const float mix_factor)
+						<pre><code data-line-numbers class="language-glsl">vec3 mix_two_colors(const vec3 src1, const vec3 src2, const float mix_factor)
 {
 	vec3 result;
 	float inverse_mix_factor = 1.0 - mix_factor;
@@ -513,6 +546,25 @@ vec3 color_mix(const vec3 src1, const vec3 src2, const float factor)
 					</section>
 				</section>
 
+				<!-- Tools -->
+				<section>
+					<section>
+						<h1>Tooling</h1>
+					</section>
+
+					<section>
+						<h3>Hotspot - profiling</h3>
+					</section>
+
+					<section>
+						<h3>Renderdoc</h3>
+					</section>
+
+					<section>
+						<h3>Compiler explorer</h3>
+					</section>
+				</section>
+
 			</div>
 		</div>
 
@@ -528,7 +580,12 @@ vec3 color_mix(const vec3 src1, const vec3 src2, const float factor)
 				hash: true,
 
 				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ],
+
+				autoPlayMedia: true,
+				width: 1920,
+				height: 1080,
+
 			});
 		</script>
 	</body>
