@@ -29,8 +29,18 @@
 					<p>Jeroen Bakker - jeroen@blender.org</p>
 				</section>
 
+				<section data-background-video="resources/heist.v045.mp4">
+				</section>
+
 				<section>
-					<p>TODO: add latest video of project heist.</p>
+					<h1>Project Heist</h1>
+					<ul>
+						<li>Short animation</li>
+						<li>Blender Animation Studio</li>
+						<li>"Less story, huge impact"</li>
+						<li>Created with only Open Source Software</li>
+						<li>Rendered using Eevee render engine.</li>
+					</ul>
 				</section>
 
 				<section>
@@ -40,10 +50,10 @@
 				<section>
 					<section>
 						<h3>Blender</h3>
-						<li>
-							<ul>Community driven open source content creation suite</ul>
-							<ul>Everyone should be free to create 3D CG content, with free technical and creative production means and free access to markets</ul>
-						</li>
+						<ul>
+							<li>Community driven open source content creation suite</li>
+							<li>Everyone should be free to create 3D CG content,<br/>with free technical and creative production means<br/>and free access to markets</li>
+						</ul>
 					</section>
 
 					<section>
@@ -51,6 +61,7 @@
 						<ul>
 							<li>Highly interested in how things work.</li>
 							<li>Always worked on performance related projects.</li>
+							<li>Focussed on Texturing, Rendering and Compositing workflows.</li>
 						</ul>
 					</section>
 
@@ -114,14 +125,6 @@
 						<h3>Discrete GPUs</h3>
 						<p>TODO: Add overview how discrete GPUs are build</P>
 					</section>
-					<section>
-						<h3>Integrated GPU</h3>
-						<p>TODO: Add overview how integrated GPUs are build</P>
-					</section>
-					<section>
-						<h3>Apple Silicon</h3>
-						<p>TODO: Add overview how Apple GPUs are build</P>
-					</section>
 				</section>
 
 				<section>
@@ -143,16 +146,45 @@
 						</ul>
 					</section>
 
+					
 					<section>
+						<h3>Invoking a draw command</h3>
+						<ul>
+							<li>Render target (frame buffer)</li>
+							<li>Program (shader)</li>
+							<li>Geometry (Index/Vertex buffers)</li>
+							<li>Data required data to use shader (Textures, buffers)</li>
+							<li>Parameters</li>
+							<li>Invoke a draw command</li>
+						</ul>
+					</section>
+
+					<section data-background-color="grey">
 						<img src="resources/graphics-pipeline.png" />
 					</section>
 
+					<section>
+						<h3>Geometry - Vertex buffer</h3>
+						<table>
+							<tr><th>in_position.x</th><th>in_position.y</th><th>in_position.z</th><th>in_color.r</th><th>in_color.g</th><th>in_color.b</th></tr>
+							<tr><td>1.0</td><td>1.0</td><td>1.0</td><td>1.0</td><td>1.0</td><td>1.0</td></tr>
+							<tr><td>1.0</td><td>1.0</td><td>-1.0</td><td>1.0</td><td>1.0</td><td>0.0</td></tr>
+							<tr><td>1.0</td><td>-1.0</td><td>1.0</td><td>1.0</td><td>0.0</td><td>1.0</td></tr>
+							<tr><td>1.0</td><td>-1.0</td><td>-1.0</td><td>1.0</td><td>0.0</td><td>0.0</td></tr>
+							<tr><td>-1.0</td><td>1.0</td><td>1.0</td><td>0.0</td><td>1.0</td><td>1.0</td></tr>
+							<tr><td>-1.0</td><td>1.0</td><td>-1.0</td><td>0.0</td><td>1.0</td><td>0.0</td></tr>
+							<tr><td>-1.0</td><td>-1.0</td><td>1.0</td><td>0.0</td><td>0.0</td><td>1.0</td></tr>
+							<tr><td>-1.0</td><td>-1.0</td><td>-1.0</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
+						</table>
+					</section>
+
+					
 					<section>
 						<h3>Example vertex shader</h3>
 						<pre><code data-line-numbers="|1-3|5-6|11-15|8-9|" class="language-glsl">/* Data read from geometry buffers. */
 in vec3 in_position;
 in vec3 in_color;
-
+							
 /* Parameter for this program. */
 uniform mat4 transform_matrix;
 
@@ -163,9 +195,51 @@ void main() {
 	gl_Position = transform_matrix * in_position;
 	out_color = in_color;
 }</code></pre>
-
-						
 					</section>
+
+					<section data-background-image="resources/pipeline-post-vertex.png">
+						<h3>Geometry - Vertex buffer</h3>
+						<table>
+							<tr><th>gl_Position.x</th><th>gl_Position.y</th><th>gl_Position.z</th><th>color.r</th><th>color.g</th><th>color.b</th></tr>
+							<tr><td>1.93</td><td>2.61</td><td>6.66</td><td>1.0</td><td>1.0</td><td>1.0</td></tr>
+							<tr><td>1.96</td><td>-2.39</td><td>7.41</td><td>1.0</td><td>1.0</td><td>0.0</td></tr>
+							<tr><td>-0.25</td><td>0.97</td><td>5.53</td><td>1.0</td><td>0.0</td><td>1.0</td></tr>
+							<tr><td>-0.22</td><td>-3.58</td><td>6.28</td><td>1.0</td><td>0.0</td><td>0.0</td></tr>
+							<tr><td>0.22</td><td>3.58</td><td>8.13</td><td>0.0</td><td>1.0</td><td>1.0</td></tr>
+							<tr><td>0.25</td><td>-0.97</td><td>8.88</td><td>0.0</td><td>1.0</td><td>0.0</td></tr>
+							<tr><td>-1.96</td><td>2.39</td><td>7.00</td><td>0.0</td><td>0.0</td><td>1.0</td></tr>
+							<tr><td>-1.93</td><td>-2.16</td><td>7.75</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
+						</table>
+					</section>
+
+					<section data-background-image="resources/pipeline-triangulate.png">
+						<h3>Geometry - Index buffer</h3>
+						<table>
+							<tr><th>Vertex 1</th><th>Vertex 2</th><th>Vertex 3</th></tr>
+							<tr><td>0</td><td>4</td><td>6</td></tr>
+							<tr><td>4</td><td>2</td><td>6</td></tr>
+							<tr><td>3</td><td>2</td><td>6</td></tr>
+							<tr><td>2</td><td>7</td><td>6</td></tr>
+							<tr><td>7</td><td>6</td><td>4</td></tr>
+							<tr><td>6</td><td>5</td><td>4</td></tr>
+							<tr><td>5</td><td>1</td><td>3</td></tr>
+							<tr><td>1</td><td>7</td><td>3</td></tr>
+							<tr><td>1</td><td>0</td><td>2</td></tr>
+							<tr><td>0</td><td>3</td><td>2</td></tr>
+							<tr><td>5</td><td>4</td><td>0</td></tr>
+							<tr><td>4</td><td>1</td><td>0</td></tr>
+						</table>
+					</section>
+
+					<section data-background-image="resources/pipeline-split-triangle.png">
+						<h3>Rasterization</h3>
+						<ul>
+							<li>For each triangle</li>
+							<li>For each scanline, determine left most and right most values.</li>
+							<li>For each pixel between left/right most invoke the fragment shader</li>
+						</ul>
+					</section>
+
 					<section>
 						<h3>Example fragment shader</h3>
 						<pre><code data-line-numbers="|1-2|4-6" class="language-glsl">/* Variable data received from vertex shader, interpolated. */
@@ -174,26 +248,11 @@ in vec3 color;
 void main() {
 	gl_FragColor = color;
 }</code></pre>
-
-						
 					</section>
 
-					<section>
-						<h3>Steps</h3>
-						<ul>
-							<li>Compile a vertex+fragment shader into a program</li>
-							<li>Activate program</li>
-							<li>Upload the input data (textures, geometry)</li>
-							<li>Setup your render target</li>
-							<li>Invoke a draw command</li>
-						</ul>
-					</section>
+					<section data-background-image="resources/pipeline-post-fragment.png">
+						<h3>Blend result to render target</h3>
 
-					<section data-visibility="hidden">
-						<h3>Compute pipeline</h3>
-						<ul>
-							<li>Compute Shader</li>
-						</ul>
 					</section>
 				</section>
 
