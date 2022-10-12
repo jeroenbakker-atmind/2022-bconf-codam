@@ -20,6 +20,9 @@
 				width:1920px;
 				height:1080px;
 			}
+			pre.large {
+				height:768px !important;
+			}
 		</style>
 		<div class="reveal">
 			<div class="slides">
@@ -37,7 +40,7 @@
 					<ul>
 						<li>Short animation</li>
 						<li>Blender Animation Studio</li>
-						<li>"Less story, huge impact"</li>
+						<li>"Less story, more impact"</li>
 						<li>Created with only Open Source Software</li>
 						<li>Rendered using Eevee render engine.</li>
 					</ul>
@@ -112,7 +115,7 @@
 				</section>
 
 				<!-- GPU overview -->
-				<section>
+				<!-- <section>
 					<h1>GPU overview</h1>
 				</section>
 
@@ -125,7 +128,7 @@
 						<h3>Discrete GPUs</h3>
 						<p>TODO: Add overview how discrete GPUs are build</P>
 					</section>
-				</section>
+				</section> -->
 
 				<section>
 					<section>
@@ -258,13 +261,13 @@ void main() {
 
 
 
-				<!-- DEBUGGING -->
+				<!-- DEBUGGING
 
-				<section >
+				<section data-visibility="hidden">
 					<h1>Debugging</h1>
 				</section>
 
-				<section>
+				<section >
 					<section>
 						<h2>Debugging</h2>
 					</section>
@@ -303,13 +306,15 @@ void main() {
 					<section>
 						TODO: Pipeline - geometry
 					</section>
+
 					<section>
 						TODO: Pipeline - fragment
 					</section>
+
 					<section>
 						TODO: Pipeline - framebuffer
 					</section>
-				</section>
+				</section> -->
 
 				<!-- PERFORMANCE -->
 
@@ -400,28 +405,51 @@ void main() {
 
 				</section>
 				<section>
+					
 					<section>
-						<h3>Register spilling</h3>
+						<h3>GPU Components</h3>
 					</section>
 
+					<section data-background-color="grey">
+						<object data="resources/gpu-components.drawio.svg" type="image/svg+xml"></object>
+					</section>
+					
 					<section data-visibility="hidden">
-						<h3>Global memory</h3>
+						<h3>GPU overview</h3>
 						<ul>
-							<li>Geometry, textures, ...</li>
-							<li>Fixed texture units/samplers</li>
+							<li>VRAM stores buffers, geometry and textures</li>
+							<li>IO Controller read/write data, executes draw commands.</li>
+							<li>GPU does the calculations</li>
+							<li>Display controllers are responsible to output display to a monitor.</li>
 						</ul>
 					</section>
 
+					<section data-background-color="grey">
+						<object data="resources/gpu-components-cus.drawio.svg" type="image/svg+xml"></object>
+					</section>
+					
+					<section data-background-color="grey">
+						<object data="resources/gpu-components-ccs.drawio.svg" type="image/svg+xml"></object>
+					</section>
 					<section>
 						<h3>Compute units</h3>
 						<ul>
 							<li>Multiple cores are grouped in Compute Units (CU).</li>
 							<li>Each CU has small amount of fixed memory called local memory.</li>
 							<li>Program/driver can give each core a part of this memory.</li>
-							<li>FE: 64KB per CU with 64 cores per CU would lead to around 1KB of local memory per core.</li>
-							<li>Register splilling</li>
+							<li>Compute cores share the same instruction pointer.</li>
 						</ul>
 					</section>
+					
+					<section>
+						<h3>Register spilling</h3>
+						<ul>
+							<li>Register spilling happens when a program requires more local memory.</li>
+							<li>When this happens some of the cores will be disabled.</li>
+							<li>Small changes to code, leads to major performance loss.</li>
+						</ul>
+					</section>
+
 
 					<section>
 						<h3>Measurements against register spilling</h3>
@@ -438,7 +466,7 @@ void main() {
 
 					<section>
 						<h3>Data encoding - barycentric coordinates</h3>
-						<pre><code data-line-numbers="|9-12|14-17" class="language-glsl">/* 
+						<pre class="large"><code data-line-numbers="|9-12|14-17" class="language-glsl">/* 
  * The 3 components of a barycentric coordinate always adds
  * up to 1.0.
  *
@@ -458,7 +486,7 @@ vec3 decode_barycentric_coordinates(vec2 encoded_coords)
 					</section>
 					<section>
 					<h3>Data encoding - use bitmasks</h3>
-						<pre><code data-line-numbers="|1,4-11|2,13-20" class="language-glsl">#define FLAG_COLOR (1<<0)
+						<pre class="large"><code data-line-numbers="|1,4-11|2,13-20" class="language-glsl">#define FLAG_COLOR (1<<0)
 #define FLAG_NORMAL (1<<1)
 
 bool use_colors(int flags)
@@ -481,7 +509,7 @@ int set_normals(int flags, bool use)
 				</section>
 				</section>
 
-				<section>
+				<!-- <section>
 					<section>
 						<h2>Unrolling</h2>
 					</section>
@@ -519,7 +547,7 @@ vec3 color_mix(const vec3 src1, const vec3 src2, const float factor)
 	return src1 * vec3(1.0 - factor) + src2 * vec3(factor);
 }</code>
 					</section>
-				</section>
+				</section> -->
 
 				<section>
 					<section>
@@ -565,9 +593,15 @@ vec3 color_mix(const vec3 src1, const vec3 src2, const float factor)
 						<h3>Why does a compiler do this?</h3>
 						<ul>
 							<li>A single core works on 4 instructions at the same time.</li>
-							<li>When executing an instruction, the previous is stored, the next is loaded and the next after that is decoded.</li>
+							<ul>
+								<li>Decoding</li>
+								<li>Loading</li>
+								<li>Executing</li>
+								<li>Storing</li>
+							</ul>
 							<li>When during execution the incorrect next instruction is loaded/decoded, this work needs to be redone for the correct instruction.</li>
 							<li>Selecting the incorrect instruction could lead to 200-400 clock cycles waisted.</li>
+							<li>GPU specific: when branching cores in the same compute unit wait until all cores catch up!</li>
 						</ul>
 					</section>
 
@@ -584,24 +618,6 @@ vec3 color_mix(const vec3 src1, const vec3 src2, const float factor)
 	vec4 __result = __multiply_add(src1, __tmp0, src2);
 	return __result;
 }</code></pre>
-					</section>
-				</section>
-
-				<section>
-					<section>
-						<h2>Add optional interactive session</h2>
-					</section>
-				</section>
-
-				<section>
-					<section>
-						<h2>Get involved!</h2>
-					</section>
-				</section>
-
-				<section>
-					<section>
-						<h2>Questions?</h2>
 					</section>
 				</section>
 
@@ -623,6 +639,26 @@ vec3 color_mix(const vec3 src1, const vec3 src2, const float factor)
 						<h3>Compiler explorer</h3>
 					</section>
 				</section>
+
+				<!-- Interactive session -->
+				<section>
+					<section>
+						<h2>Add optional interactive session (hotspot or renderdoc)</h2>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Get involved!</h2>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Questions?</h2>
+					</section>
+				</section>
+
 
 			</div>
 		</div>
