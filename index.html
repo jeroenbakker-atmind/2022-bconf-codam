@@ -8,15 +8,48 @@
 
 		<link rel="stylesheet" href="dist/reset.css">
 		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+		<link rel="stylesheet" href="dist/theme/league.css">
 
 		<!-- Theme used for syntax highlighted code -->
 		<link rel="stylesheet" href="plugin/highlight/monokai.css">
 	</head>
 	<body>
+		<style>
+			.head {
+				height: 16vh;
+				min-height: 16vh;
+			}
+			.body {
+				display: flex;
+				flex-direction: row;
+				height: 84vh;
+				min-height: 84vh;
+				align-items: center;
+			}
+			
+		</style>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
+				<section>
+					<h1>Crowd in battle</h1>
+					<h2>CrowdSim3D</h2>
+				</section>
+				<section>
+					<div class="head">
+						<h3>CrowdSim</h3>
+					</div>
+					<div class="body">
+						<ul>
+							<li>Blah</li>
+							<li>blah2 oasjhd kljfsd lfkjs dlfkjs dlfk kjshdf kjshd fkjsdhf kjshdf kjshdf kjsdh fkjshdf kjshd fkjshdf kjsfd h</li>
+							<li>blah2 oasjhd kljfsd lfkjs dlfkjs dlfk kjshdf kjshd fkjsdhf kjshdf kjshdf kjsdh fkjshdf kjshd fkjshdf kjsfd h</li>
+							<li>blah2 oasjhd kljfsd lfkjs dlfkjs dlfk kjshdf kjshd fkjsdhf kjshdf kjshdf kjsdh fkjshdf kjshd fkjshdf kjsfd h</li>
+						</ul>
+						<div>
+							<video src="media/attack.v1.mp4" loop></video>
+						</div>
+					</div>
+				</section>
 				<section>Slide 2
 						<aside class="notes">
 						<p>Some notes</p>
@@ -35,10 +68,15 @@
 		<script src="plugin/highlight/highlight.js"></script>
 		<script>
 			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
+			// https://revealjs.com/initialization/
 			// - https://revealjs.com/config/
 			Reveal.initialize({
 				hash: true,
+				width: 1920,
+				height: 1080,
+				//center: true,
+				autoPlayMedia: true,
+				disableLayout: true,
 
 				// Learn about plugins: https://revealjs.com/plugins/
 				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
