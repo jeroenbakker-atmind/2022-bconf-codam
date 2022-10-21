@@ -8,13 +8,15 @@
 
 		<link rel="stylesheet" href="dist/reset.css">
 		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/league.css">
+		<link rel="stylesheet" href="dist/theme/crowdsim.css">
 
 		<!-- Theme used for syntax highlighted code -->
 		<link rel="stylesheet" href="plugin/highlight/monokai.css">
 	</head>
 	<body>
 		<style>
+			section.layout-split {
+			}
 			section.layout-split .head {
 				height: 16vh;
 				min-height: 16vh;
@@ -25,40 +27,430 @@
 				height: 84vh;
 				min-height: 84vh;
 				align-items: center;
+				color: #595959;
 			}
-			
+			section.layout-split .side {
+				width: 50%;
+			}
+
+			/* layout-section */
+			section.layout-section h2 {
+				color: white;
+				width: 100vw;
+				height: 100vh;
+			}
+
 		</style>
 		<div class="reveal">
 			<div class="slides">
-				<section>
-					<h1>Crowd in battle</h1>
-					<h2>CrowdSim3D</h2>
+				<section data-background-image="media/title.png">
+					<aside class="notes">
+						<p>Hi everyone, today I will give a talk about crowds for battle.</p>
+					</aside>
+				</section>
+				<section data-background-color="white">
+					<h2>What is CrowdSim3D?</h2>
+					<h3>An agent based crowd and traffic simulation <br/> add-on for Blender.</h3>
+
+					<aside class="notes">
+						<p>Crowdsim3d is an agent based crowd and traffic simulation add-on for blender.</p>
+					</aside>
 				</section>
 
-				<section class="layout-split">
+				<section data-background-color="white" class="layout-split">
 					<div class="head">
-						<h3>CrowdSim</h3>
+						<h2>Traffic sim</h2>
 					</div>
 					<div class="body">
+						<div class="side">
+							<p>Use curves to build a complete traffic system with lanes, junctions, traffic lights and traffic rules.</p>
+							<p>Supports cars, public transportation, pedestrians and long vehicles.</p>
+						</div>
+						<div class="side">
+							<video src="media/traffic-intro.mp4" loop></video>
+						</div>
+					</div>
+					<aside class="notes">
+						<p>You can easily create a traffic system and configure your lanes, junctions, traffic lights and traffic rules.</p>
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Crowd sim</h2>
+					</div>
+					<div class="body">
+						<div class="side">
+							<p>Create any type of crowd, moving or not, using path following, avoidance, target navigation and animation blending.</p>
+							<p>Animations can be edited after the simulation in the NLA editor.</p>
+						</div>
+						<div class="side">
+							<video src="media/City-example-traffic-pedestrians-crowd.mp4" loop></video>
+						</div>
+					</div>
+					<aside class="notes">
+						<p>You can create any type of crowd and using Blender’s node system program the movement of your crowd.</p>
+					</aside>
+				</section>
+
+				<section class="layout-section" data-background-image="media/soldiers.png" data-background-color="#ff6500">
+					<h2>Battle</h2>
+					<aside class="notes">
+						<p>
+							We recently focussed on crowds for battle.
+In battle scenes soldiers marche neatly in formation or sometimes less organised.
+						</p>
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Crowd and animation</h2>
+					</div>
+					<div class="body">
+						<div>
+							<video src="media/mesh-material-variables.mp4" loop></video>
+						</div>
+					</div>
+					<aside class="notes">
+						<p>
+							In crowdsim3d you can create varieties in meshes and materials to get variety in your crowd.
+						</p>
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>The march</h2>
+					</div>
+					<div class="body">
+						<div>
+							<video src="media/path-following_1_a.mp4" loop></video>
+						</div>
+					</div>
+					<aside class="notes">
+						<p>
+							In most battle scenes the soldiers follow a path. Sometimes it is very clear and sometimes it’s less clear.
+							To follow a path in crowdsim3d, draw a curve and have your agents follow the curve.
+						</p>
 						<ul>
-							<li>Blah</li>
-							<li>blah2 oasjhd kljfsd lfkjs dlfkjs dlfk kjshdf kjshd fkjsdhf kjshdf kjshdf kjsdh fkjshdf kjshd fkjshdf kjsfd h</li>
-							<li>blah2 oasjhd kljfsd lfkjs dlfkjs dlfk kjshdf kjshd fkjsdhf kjshdf kjshdf kjsdh fkjshdf kjshd fkjshdf kjsfd h</li>
-							<li>blah2 oasjhd kljfsd lfkjs dlfkjs dlfk kjshdf kjshd fkjsdhf kjshdf kjshdf kjsdh fkjshdf kjshd fkjshdf kjsfd h</li>
+							<li>Agents will stay in formation as much as possible, keeping the same distance to each other and to the curve.</li>
+							<li>A very neat march.</li>
+							<li>But if you think this looks to neat or mathematical you can create some varieties.</li>
 						</ul>
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Different agent speeds</h2>
+					</div>
+					<div class="body">
+						<div>
+							<video src="media/path-following_1_b.mp4" loop></video>
+						</div>
+					</div>
+					<aside class="notes">
+						<p>
+							..by giving agents different speed.
+							</p>
+							<ul>
+								<li>
+									They still follow a curve but it’s less obvious
+								</li>
+							</ul>
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Path guidance</h2>
+					</div>
+					<div class="body">
+						<div>
+							<video src="media/path-following_2_a.mp4" loop></video>
+						</div>
+					</div>
+					<aside class="notes">
+						<p>
+							When creating some scenes I noticed that I didn’t want them to follow a specific curve but rather wanted to influence their route.
+						</p>
+						<ul>
+							<li>
+								So we came up with the solution of using multiple curves. When using multiple curves the agents will
+							</li>
+							<li>
+								Move between curves while maintaining the distance to the curves.
+							</li>
+						</ul>
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Path guidance</h2>
+					</div>
+					<div class="body">
+						<div>
+							<video src="media/path-following_3.mp4" loop></video>
+						</div>
+					</div>
+					<aside class="notes">
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Different agent speed</h2>
+					</div>
+					<div class="body">
+						<div>
+							<video src="media/path-following_2_b.mp4" loop></video>
+						</div>
+					</div>
+					<aside class="notes">
+						<p>
+							I can again give agents different speed.
+						</p>
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Different curve speed</h2>
+					</div>
+					<div class="body">
+						<div>
+							<video src="media/path-following_2_c.mp4" loop></video>
+						</div>
+					</div>
+					<aside class="notes">
+						<p>
+							I can also set the velocity of a curve and have agents near that curve follow that speed.
+						</p>
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Example</h2>
+					</div>
+					<div class="body">
+						<div>
+							<video src="media/lake.mp4" loop></video>
+						</div>
+					</div>
+					<aside class="notes">
+						<p>
+							So with all these possibilities I could create some nice running scenes through the forest.
+						</p>
+						<p>
+							I’m using curves to have them merge together and then split to go around the lake.
+						</p>
+						<p>
+							You can find more examples on our YT channel.
+						</p>
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Avoidance</h2>
+					</div>
+					<div class="body">
+						<div>
+							<video src="media/breakdown_crosswise.mp4" loop></video>
+						</div>
+					</div>
+					<aside class="notes">
+						<p>
+							You might have noticed that the agents are already avoiding each other, by taking a different route or by adjusting their speed.
+						</p>
+						<p>
+							For battle scenes the existing force and rvo 2 avoidance algorithms didn’t work.
+						</p>
+						<p>
+							In 2017/1018 a new force avoidance algorithm was presented; the implicit force avoid.
+						</p>
+						<p>
+							Avoidance is much better, has a higher quality, is more predictable but does take quite longer to calculate.
+						</p>
+					</aside>
+				</section>
+
+				<section data-background-color="white" data-background-image="media/implicit-crowd-paper.png">
+					<aside class="notes">
+						<p>
+							This is the paper on implicit force avoidance. In 2018 there was an update on this paper.
+						</p>
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Walk cycles</h2>
+					</div>
+					<div class="body">
+						<div class="side">
+							<ul>
+								<li>Creating walk cycles for every speed, every pose is time consuming.</li>
+								<li>Create a set of key walk cycles that can be blended.</li>
+								<li>Per key walk cycle configure the speed.</li>
+							</ul>
+						</div>
+						<div class="side">
+							<video src="media/walkcycles.mp4" loop></video>
+						</div>
+					</div>
+					<aside class="notes">
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Animation blending</h2>
+					</div>
+					<div class="body">
+						<div class="side">
+							<ul>
+								<li>The speed determines how much of a key walk cycle is applied.</li>
+								<li>Walk cycles don’t need to have the same duration.</li>
+							</ul>
+						</div>
+						<div class="side">
+							<video src="media/animation-blending.mp4" loop></video>
+						</div>
+					</div>
+					<aside class="notes">
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Example</h2>
+					</div>
+					<div class="body">
 						<div>
 							<video src="media/attack.v1.mp4" loop></video>
 						</div>
 					</div>
+					<aside class="notes">
+						<p>
+							In many cases implicit force avoidance very well, except for standing in formation.
+In the case of formations the RVO 2 algorithm still gave the best result.
+For example, with Implicit force I couldn’t get the agents to stand still. There is always a force present.
+						</p>
+					</aside>
 				</section>
-				
-				<section>Slide 2
-						<aside class="notes">
-						<p>Some notes</p>
-						</aside>
-						<p>Some slide text</p>
-						<aside class="notes">
-						<p>and some more notes</p>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Formations</h2>
+					</div>
+					<div class="body">
+						<div>
+							<video src="media/attention.mp4" loop></video>
+						</div>
+					</div>
+					<aside class="notes">
+						<p>
+							In many cases implicit force avoidance very well, except for standing in formation.
+In the case of formations the RVO 2 algorithm still gave the best result.
+For example, with Implicit force I couldn’t get the agents to stand still. There is always a force present.
+						</p>
+					</aside>
+				</section>
+
+				<section data-background-color="white" data-background-image="media/blendernation.jpg" class="layout-split">
+					<div class="head">
+						<h2>Next</h2>
+						<h2>Battle</h2>
+					</div>
+					<aside class="notes">
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Mass</h2>
+					</div>
+					<div class="body">
+						<ul>
+							<li>
+								Performance of working with lots of objects in Blender should improve.
+							</li>
+							<li>
+								Patches around: T73411
+							</li>
+							<li>
+								Blender 3.4 will bring quite some performance improvements
+							</li>
+						</ul>
+					</div>
+					<aside class="notes">
+						Working with mass crowds is still very slow in Blender. Anyone tried to create a stadium scene with 68.000 supporters in Blender? Or a battle scene with 50.000 - 100.000 or more soldiers.
+						To improve Blender for working with lots and lots of objects and characters I’ve been working on some patches for blender.
+						These will land in Blender 3.4.
+						Also much thanks to Hans, Bastien, Aras and Campbell for their support.
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Playback</h2>
+					</div>
+					<div class="body">
+						<ul>
+							<li>
+								Quick review of the simulation without rendering.
+							</li>
+							<li>
+								Add overlay to the 3D viewport to play back the simulation.
+							</li>
+						</ul>
+					</div>
+					<aside class="notes">
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>More examples coming...</h2>
+					</div>
+					<div class="body">
+						<div>
+							<img src="media/viking_cross.jpg" />
+							<img src="media/marching-brits.jpg" />
+							<img src="media/marching-vikings.jpg" />
+						</div>
+					</div>
+					<aside class="notes">
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Panic in the city</h2>
+					</div>
+					<div class="body">
+						<div>
+							<img src="media/stadium.png" />
+						</div>
+					</div>
+					<aside class="notes">
+					</aside>
+				</section>
+
+				<section data-background-color="white" class="layout-split">
+					<div class="head">
+						<h2>Check it out</h2>
+					</div>
+					<div	>
+						<p>crowdsim3d.com</p>
+						<p>YT: crowdsim3d</p>
+						<p>Twitter: atmind, #crowdsim3d</p>
+					</div>
+					<aside class="notes">
 					</aside>
 				</section>
 			</div>
