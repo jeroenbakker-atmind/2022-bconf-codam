@@ -15,8 +15,6 @@
 	</head>
 	<body>
 		<style>
-			section.layout-split {
-			}
 			section.layout-split .head {
 				height: 16vh;
 				min-height: 16vh;
@@ -40,6 +38,18 @@
 				height: 100vh;
 			}
 
+			/* layout-text */
+			section.layout-text .head {
+				height: 16vh;
+				min-height: 16vh;
+			}
+			section.layout-text .body {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				height: 84vh;
+			}
 		</style>
 		<div class="reveal">
 			<div class="slides">
@@ -48,9 +58,14 @@
 						<p>Hi everyone, today I will give a talk about crowds for battle.</p>
 					</aside>
 				</section>
-				<section data-background-color="white">
-					<h2>What is CrowdSim3D?</h2>
-					<h3>An agent based crowd and traffic simulation <br/> add-on for Blender.</h3>
+
+				<section class="layout-text">
+					<div class="head">
+						<h2>What is CrowdSim3D?</h2>
+					</div>
+					<p class="body">
+						An agent based crowd and traffic simulation <br/> add-on for Blender.
+					</p>
 
 					<aside class="notes">
 						<p>Crowdsim3d is an agent based crowd and traffic simulation add-on for blender.</p>
@@ -292,11 +307,15 @@ In battle scenes soldiers marche neatly in formation or sometimes less organised
 					</div>
 					<div class="body">
 						<div class="side">
-							<ul>
-								<li>Creating walk cycles for every speed, every pose is time consuming.</li>
-								<li>Create a set of key walk cycles that can be blended.</li>
-								<li>Per key walk cycle configure the speed.</li>
-							</ul>
+							<p>
+								Creating walk cycles for every speed, every pose is time consuming.
+							</p>
+							<p>
+								Create a set of key walk cycles that can be blended.
+							</p>
+							<p>
+								Per key walk cycle configure the speed.
+							</p>
 						</div>
 						<div class="side">
 							<video src="media/walkcycles.mp4" loop></video>
@@ -312,10 +331,12 @@ In battle scenes soldiers marche neatly in formation or sometimes less organised
 					</div>
 					<div class="body">
 						<div class="side">
-							<ul>
-								<li>The speed determines how much of a key walk cycle is applied.</li>
-								<li>Walk cycles don’t need to have the same duration.</li>
-							</ul>
+							<p>
+								The speed determines how much of a key walk cycle is applied.
+							</p>
+							<p>
+								Walk cycles don’t need to have the same duration.
+							</p>
 						</div>
 						<div class="side">
 							<video src="media/animation-blending.mp4" loop></video>
@@ -361,31 +382,28 @@ For example, with Implicit force I couldn’t get the agents to stand still. The
 					</aside>
 				</section>
 
-				<section data-background-color="white" data-background-image="media/blendernation.jpg" class="layout-split">
+				<section data-background-color="white" data-background-image="media/blendernation.jpg" class="layout-section">
 					<div class="head">
-						<h2>Next</h2>
-						<h2>Battle</h2>
+						<h2>Next Battle</h2>
 					</div>
 					<aside class="notes">
 					</aside>
 				</section>
 
-				<section data-background-color="white" class="layout-split">
+				<section data-background-color="white" class="layout-text">
 					<div class="head">
 						<h2>Mass</h2>
 					</div>
 					<div class="body">
-						<ul>
-							<li>
-								Performance of working with lots of objects in Blender should improve.
-							</li>
-							<li>
-								Patches around: T73411
-							</li>
-							<li>
-								Blender 3.4 will bring quite some performance improvements
-							</li>
-						</ul>
+						<p>
+							Performance of working with lots of objects in Blender should improve.
+						</p>
+						<p>
+							Patches around: T73411
+						</p>
+						<p>
+							Blender 3.4 will bring quite some performance improvements
+						</p>
 					</div>
 					<aside class="notes">
 						Working with mass crowds is still very slow in Blender. Anyone tried to create a stadium scene with 68.000 supporters in Blender? Or a battle scene with 50.000 - 100.000 or more soldiers.
@@ -395,19 +413,17 @@ For example, with Implicit force I couldn’t get the agents to stand still. The
 					</aside>
 				</section>
 
-				<section data-background-color="white" class="layout-split">
+				<section data-background-color="white" class="layout-text">
 					<div class="head">
 						<h2>Playback</h2>
 					</div>
 					<div class="body">
-						<ul>
-							<li>
-								Quick review of the simulation without rendering.
-							</li>
-							<li>
-								Add overlay to the 3D viewport to play back the simulation.
-							</li>
-						</ul>
+						<p>
+							Quick review of the simulation without rendering.
+						</p>
+						<p>
+							Add overlay to the 3D viewport to play back the simulation.
+						</p>
 					</div>
 					<aside class="notes">
 					</aside>
@@ -418,10 +434,10 @@ For example, with Implicit force I couldn’t get the agents to stand still. The
 						<h2>More examples coming...</h2>
 					</div>
 					<div class="body">
-						<div>
-							<img src="media/viking_cross.jpg" />
-							<img src="media/marching-brits.jpg" />
-							<img src="media/marching-vikings.jpg" />
+						<div style="display:grid;grid-template-rows:auto auto auto auto auto;grid-template-columns:auto auto auto auto auto">
+							<img style="grid-area: 1 / 1 / 3 / 3" src="media/viking_cross.jpg" />
+							<img style="grid-area: 2 / 3 / 4 / 5" src="media/marching-vikings.jpg" />
+							<img style="grid-area: 3 / 1 / 5 / 3" src="media/marching-brits.jpg" />
 						</div>
 					</div>
 					<aside class="notes">
@@ -441,11 +457,11 @@ For example, with Implicit force I couldn’t get the agents to stand still. The
 					</aside>
 				</section>
 
-				<section data-background-color="white" class="layout-split">
+				<section data-background-color="white" class="layout-text">
 					<div class="head">
 						<h2>Check it out</h2>
 					</div>
-					<div	>
+					<div class="body">
 						<p>crowdsim3d.com</p>
 						<p>YT: crowdsim3d</p>
 						<p>Twitter: atmind, #crowdsim3d</p>
@@ -468,7 +484,6 @@ For example, with Implicit force I couldn’t get the agents to stand still. The
 				hash: true,
 				width: 1920,
 				height: 1080,
-				//center: true,
 				autoPlayMedia: true,
 				disableLayout: true,
 
