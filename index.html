@@ -8,7 +8,7 @@
 
 		<link rel="stylesheet" href="dist/reset.css">
 		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+		<link rel="stylesheet" href="dist/theme/beige.css">
 
 		<!-- Theme used for syntax highlighted code -->
 		<link rel="stylesheet" href="plugin/highlight/monokai.css">
@@ -27,117 +27,133 @@
 		<div class="reveal">
 			<div class="slides">
 				<section>
-					<h3>Blender Eevee/Viewport module</h3>
+					<h1>Blender Eevee/Viewport module</h1>
 					<h2>GPU development onboarding</h2>
 					<p>Jeroen Bakker - jeroen@blender.org</p>
 				</section>
 
-				<section data-background-video="resources/heist.v045.mp4">
-				</section>
-
 				<section>
-					<h1>Project Heist</h1>
+					<h2>Introduction</h2>
 					<ul>
-						<li>Short animation</li>
-						<li>Blender Animation Studio</li>
-						<li>"Less story, more impact"</li>
-						<li>Created with only Open Source Software</li>
-						<li>Rendered using Eevee render engine.</li>
+						<li>What happens between frames.</li>
+						<li>GPU module</li>
+						<li>Draw manager/engines</li>
+						<li>Debugging</li>
 					</ul>
 				</section>
 
 				<section>
-					<h1>Blender</h1>
+					<section>
+						<h2>Between frames</h2>
+						<object data="resources/between-frames-logic.drawio.svg" type="image/svg+xml"></object>
+
+					</section>
+
+					<section>
+						<h2>wm.c::WM_main</h2>
+						<pre class="large"><code data-ln-start-from="628" data-line-numbers="" class="language-c">void WM_main(bContext *C)
+{
+  /* Single refresh before handling events.
+   * This ensures we don't run operators before the depsgraph has been evaluated. */
+  wm_event_do_refresh_wm_and_depsgraph(C);
+
+  while (1) {
+
+    /* Get events from ghost, handle window events, add to window queues. */
+    wm_window_process_events(C);
+
+    /* Per window, all events to the window, screen, area and region handlers. */
+    wm_event_do_handlers(C);
+
+    /* Events have left notes about changes, we handle and cache it. */
+    wm_event_do_notifiers(C);
+
+    /* Execute cached changes draw. */
+    wm_draw_update(C);
+  }
+}</code></pre>
+					</section>
+
+					<section>
+						<h3>Editor drawing</h3>
+						<ul>
+							<li>Editors have multiple regions
+								<ul>
+									<li>Main</li>
+									<li>Sidebar</li>
+									<li>Tools</li>
+									<li>Header</li>
+								</ul>
+							</li>
+							<li>Each region has a draw callback</li>
+							<li>Draw callbacks are invoked when space are tagged for updating.</li>
+							<li>Draw callbacks uses UI Components, GUI module or Draw Manager to do actual drawing.</li>
+						</ul>
+					</section>
+						
+					<section>
+						<h2>ED_spacetype_*</h2>
+						<pre class="large"><code data-line-numbers="|1-7, 19-20|11-12,16|13-15" class="language-c">void ED_spacetype_view3d()
+{
+  SpaceType *st = MEM_cnew<SpaceType>("spacetype view3d");
+  ARegionType *art;
+
+  st->spaceid = SPACE_VIEW3D;
+  STRNCPY(st->name, "View3D");
+
+  ...
+
+  /* regions: main window */
+  art = MEM_cnew<ARegionType>("spacetype view3d main region");
+  ...
+  art->draw = view3d_main_region_draw;
+  ...
+  BLI_addhead(&st->regiontypes, art);
+
+  ..
+  BKE_spacetype_register(st);
+}</code></pre>
+					</section>
+				</section>
+
+				<section>
+				
+					<section>
+						<h2>GPU module</h2>
+						<ul>
+							<li>Common interface to draw on different GPU backends
+								<ul>
+									<li>OpenGL</li>
+									<li>Metal</li>
+									<li>(Vulkan)</li>
+								</ul>
+							</li>
+							<li>Based on core profile.</li>
+							<li>With immediate mode compatibility layer.</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>GPU backend</h3>
+						<ul>
+							<li></li>
+						</ul>
+					</section>
 				</section>
 
 				<section>
 					<section>
-						<h3>Blender</h3>
+						<h2>GPU Core profile</h2>
 						<ul>
-							<li>Community driven open source content creation suite</li>
-							<li>Everyone should be free to create 3D CG content,<br/>with free technical and creative production means<br/>and free access to markets</li>
-						</ul>
-					</section>
-
-					<section>
-						<h3>How did I start?</h3>
-						<ul>
-							<li>Highly interested in how things work.</li>
-							<li>Always worked on performance related projects.</li>
-							<li>Focussed on Texturing, Rendering and Compositing workflows.</li>
-						</ul>
-					</section>
-
-					<section>
-						<h3>My role</h3>
-						<ul>
-							<li>Vision: Interactive performance</li>
-							<li>Everything that a user does should become interactive but still able to handle complexity</li>
-						</ul>
-					</section>
-
-					<section>
-						<h3>Project: Workbench-engine</h3>
-					</section>
-
-					<section>
-						<h3>Project: Image editor</h3>
-					</section>
-
-					<section>
-						<h3>Project: Texture painting</h3>
-					</section>
-				</section>
-
-				<section data-visibility="hidden">
-					<section>
-						<h2>Platform</h2>
-					</section>
-
-					<section>
-						<h3>What is a platform?</h3>
-						<ul>
-							<li>Operating System</li>
-							<ul>
-								<li>Windows, macOS, Linux</li>
-							</ul>
-							<li>GPU Vendor</li>
-							<ul>
-								<li>Apple, AMD, Intel, NVIDIA, ...</li>
-							</ul>
-							<li>GPU driver</li>
-							<ul>
-								<li>Closed source, Open source, Software emulation</li>
-							</ul>
-						</ul>
-						<p>Your programs will behave differently!</p>
-					</section>
-				</section>
-
-				<!-- GPU overview -->
-				<!-- <section>
-					<h1>GPU overview</h1>
-				</section>
-
-				<section>
-					<section>
-						<h2>GPU Architectures</h2>
-					</section>
-
-					<section>
-						<h3>Discrete GPUs</h3>
-						<p>TODO: Add overview how discrete GPUs are build</P>
-					</section>
-				</section> -->
-
-				<section>
-					<section>
-						<h2>Graphic Libraries (GL)</h2>
-						<ul>
-							<li>OpenGL</li>
-							<li>Vulkan</li>
-							<li>DirectX</li>
-							<li>Metal</li>
+							<li>Core profile is a 'new' API introduced with OpenGL 3.3</li>
+							<li>Deprecated older API, but still exists till today (immediate).</li>
+							<li>CAD software didn't want to rewrite their code, but games want to use the new API.</li>
+							<li>Is a shader based approach
+								<ul>
+									<li>Vertex shader</li>
+									<li>Fragment shader</li>
+								</ul>
+							</li>
 						</ul>
 					</section>
 
@@ -148,7 +164,6 @@
 							<li>Compute pipeline</li>
 						</ul>
 					</section>
-
 					
 					<section>
 						<h3>Invoking a draw command</h3>
@@ -260,103 +275,120 @@ void main() {
 				</section>
 
 
-
-				<!-- DEBUGGING
-
-				<section data-visibility="hidden">
-					<h1>Debugging</h1>
-				</section>
-
-				<section >
-					<section>
-						<h2>Debugging</h2>
-					</section>
-
-					<section>
-						<h3>Debugging techniques</h3>
-
-						<ul>
-							<li><code>printf</code> debugging</li>
-							<li>Step through debugger</li>
-						</ul>
-					</section>
-
-					<section>
-						<h3>use fragment shader to output data.</h3>
-					</section>
-
-					<section>
-						<h3>Renderdoc</h3>
-						<ul>
-							<li>Open source GPU debugger.</li>
-							<li>Original created by Crytek developer.</li>
-							<li>Not supported by Apple...</li>
-						</ul>
-
-					</section>
-
-					<section>
-						TODO: overview blender frame
-					</section>
-
-					<section>
-						TODO: overview eevee-draw calls (video)
-					</section>
-
-					<section>
-						TODO: Pipeline - geometry
-					</section>
-
-					<section>
-						TODO: Pipeline - fragment
-					</section>
-
-					<section>
-						TODO: Pipeline - framebuffer
-					</section>
-				</section> -->
-
-				<!-- PERFORMANCE -->
-
 				<section>
-					<h1>Performance</h1>
+					<section>
+						<h3>Immediate mode</h3>
+						<ul>
+							<li>Compatibility layer mostly used to draw UI related elements.</li>
+							<li>Somewhat in between OpenGL immediate mode and core profile.</li>
+							<li>Need to work with shader pipelines</li>
+							<li>Provides a set of shaders to hide most complexity.</li>
+							<li>Function names follow supported opengl immediate mode functions.</li>
+						</ul>
+					</section>
+					<section>
+						<pre class="large"><code data-line-numbers="|1-2|4-5, 14|7-12" class="language-c">GPUVertFormat *format = immVertexFormat();
+uint pos = GPU_vertformat_attr_add(format, "pos", GPU_COMP_F32, 2, GPU_FETCH_FLOAT);
+
+immBindBuiltinProgram(GPU_SHADER_3D_UNIFORM_COLOR);
+immUniformColor3f(1.0f, 1.0f, 1.0f);
+
+immBegin(GPU_PRIM_LINES, 4);
+immVertex2f(pos, cx - cross_size, cy - cross_size);
+immVertex2f(pos, cx + cross_size, cy + cross_size);
+immVertex2f(pos, cx + cross_size, cy - cross_size);
+immVertex2f(pos, cx - cross_size, cy + cross_size);
+immEnd();
+
+immUnbindProgram();</code></pre>
+					</section>
 				</section>
 
 				<section>
 					<section>
-						<h2>Interactive Performance</h2>
-					</section>
-
-					<section>
-						<h3>Idea</h3>
+						<h2>DrawManager</h3>
 						<ul>
-							<li>Give artists more freedom by improving performance.</li>
-							<li>Steps that artists do, are done in sequence.</li>
-							<li>When adding more performance the order becomes irrelevant.</li>
-							<li>Emerging of new and more impressive workflows.</li>
+							<li>Original designed to draw 3d viewport</li>
+							<li>Focussed on drawing performance</li>
+							<li>Composite multiple draw engines
+								<ul>
+									<li>Eevee</li>
+									<li>Workbench</li>
+									<li>External</li>
+									<li>Grease pencil</li>
+									<li>Viewport compositor</li>
+									<li>Overlay</li>
+									<li>Selection</li>
+								</ul>
+							</li>
+							<li>Also used to draw image editor/compositor background.</li>
 						</ul>
 					</section>
 
-					<section data-background-video="resources/interactive-performance.mp4" data->
-					</section>
-
 					<section>
-						<h3>How</h3>
+						<h3>Performance</h3>
 						<ul>
-							<li>User input, Make changes, Drawing should happen within +- 100ms.</li>
-							<li>Focus on how well code scales on available hardware (both CPU and GPU).</li>
-							<li>Sometimes requires different approaches when dedicated GPU is available.</li>
-							<li>Reduce data transfers between RAM and VRAM.</li>
+							<li>Programming model organized in passes, shading groups and sub groups to reduce context switches.</li>
+							<li>Passes include blending mode and GPU state changes
+								<ul>
+									<li>Write to depth.</li>
+									<li>Depth tests.</li>
+									<li>How to blend the resulting fragment shader pixel to the render target.</li>
+								</ul>
+							</li>
+							<li>Shading groups contain a list of commands to executes
+								<ul>
+									<li>Data binding</li>
+									<li>Invoke drawing commands</li>
+									<li>...</li>
+								</ul>
+							</li>
+							<li>Sub shading groups are a sub-group to reuse data that is already bound</li>
 						</ul>
 					</section>
 
-					<section data-background-color="grey">
-						<object data="resources/memory-components.drawio.svg" type="image/svg+xml"></object>
+					<section>
+						<h3>Draw Engines API</h3>
+						<ul>
+							<li>Init</li>
+							<li>Populate</li>
+							<li>Draw scene</li>
+						</ul>
 					</section>
 
+					<section>
+						<h3>DrawEngine:Init</h3>
+
+					</section>
+					<section>
+						<h3>DrawEngine:Populate</h3>
+
+					</section>
+					<section>
+						<h3>DrawEngine:DrawScene</h3>
+					</section>
+
+					<section>
+						<h3>Compositing draw engines</h3>
+						<ul>
+							<li>There are 2 render targets</li>
+							<li>Color render target where most draw engines draw on (scene linear).</li>
+							<li>Overlay target used to draw UI controls on top of the draw engine (sRGB).</li>
+							<li>When applying color management the render targets are composited together with alpha over.</li>
+						</ul>
+					</section>
+
+					<section>
+
+					</section>
 				</section>
 
+
 				<section>
+					<section>
+						<h2>Performance</h2>
+					</section>
+
 					<section>
 						<h3>Instruction set</h3>
 						<ul>
@@ -509,46 +541,6 @@ int set_normals(int flags, bool use)
 				</section>
 				</section>
 
-				<!-- <section>
-					<section>
-						<h2>Unrolling</h2>
-					</section>
-
-					<section>
-						<h3>Stack</h3>
-						<ul>
-							<li>GPUs don't use (or have) a stack to temporarily store data.</li>
-							<li></li>
-						</ul>
-					</section>
-
-					<section>
-						<h3>Function unrolling</h3>
-						<pre><code data-line-numbers class="language-glsl">vec3 color_add(const vec3 src1, const vec3 src2)
-{
-	return src1 + src2;
-}
-
-vec3 color_mul(const vec3 src1, const vec3 src2)
-{
-	return src1 * scr2;
-}
-
-vec3 color_mix(const vec3 src1, const vec3 src2, const float factor)
-{
-	float inverse_factor = 1.0 - factor;
-	return color_add(
-		color_mul(src1, vec3(inverse_factor)),
-		color_mul(src2, vec3(factor));
-}</code>
-					</section>
-				<section>
-					<pre><code data-line-numbers class="language-glsl">vec3 color_mix(const vec3 src1, const vec3 src2, const float factor) {
-	return src1 * vec3(1.0 - factor) + src2 * vec3(factor);
-}</code>
-					</section>
-				</section> -->
-
 				<section>
 					<section>
 						<h2>Branching</h2>
@@ -637,25 +629,6 @@ vec3 color_mix(const vec3 src1, const vec3 src2, const float factor)
 
 					<section>
 						<h3>Compiler explorer</h3>
-					</section>
-				</section>
-
-				<!-- Interactive session -->
-				<section>
-					<section>
-						<h2>Add optional interactive session (hotspot or renderdoc)</h2>
-					</section>
-				</section>
-
-				<section>
-					<section>
-						<h2>Get involved!</h2>
-					</section>
-				</section>
-
-				<section>
-					<section>
-						<h2>Questions?</h2>
 					</section>
 				</section>
 
