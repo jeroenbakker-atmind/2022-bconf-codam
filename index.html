@@ -260,21 +260,74 @@ void main() {
 
 					<section>
 						<h3>Example fragment shader</h3>
-						<pre><code data-line-numbers="|1-2|4-6" class="language-glsl">/* Variable data received from vertex shader, interpolated. */
+						<pre><code data-line-numbers="|1-2|4-5|7-10" class="language-glsl">/* Variable data received from vertex shader, interpolated. */
 in vec3 color;
 
+/* Output of the fragment shader, will be blended onto the render target. */
+out vec4 fragColor;
+
 void main() {
-	gl_FragColor = color;
+	fragColor = vec4(color, 1.0);
 }</code></pre>
 					</section>
 
 					<section data-background-image="resources/pipeline-post-fragment.png">
 						<h3>Blend result to render target</h3>
-
 					</section>
 				</section>
 
+				<section>
 
+					<section>
+						<h3>Compatibility</h3>
+						<ul>
+							<li>Shader languages aren't standardized across GPU backends</li>
+							<li>Vulkan GSLS != OpenGL GLSL != MSL</li>
+							<li>CreateInfo is a definition of a shader program</li>
+							<li>Goal is to overcome these limitations</li>
+						</ul>
+					</section>
+					
+					<section>
+						<h3>CreateInfo</h3>
+						<pre><code data-line-numbers="|3|4-6,8-9|1|7,10|11" class="language-cpp">GPU_SHADER_INTERFACE_INFO(smooth_color_iface, "").smooth(Type::VEC4, "color");
+
+							GPU_SHADER_CREATE_INFO(shader_3D_smooth_color)
+							.vertex_in(0, Type::VEC3, "in_position")
+    .vertex_in(1, Type::VEC4, "in_color")
+    .vertex_out(smooth_color_iface)
+    .fragment_out(0, Type::VEC4, "fragColor")
+    .push_constant(Type::MAT4, "transform_matrix")
+    .vertex_source("color_vert.glsl")
+    .fragment_source("color_frag.glsl")
+    .do_static_compilation(true);</code></pre>
+	<pre class="fragment"><code data-line-numbers class="language-cpp">GPUShader *shader = GPU_shader_create_from_info_name("shader_3D_smooth_color");</code></pre>
+					</section>
+					
+					<section>
+						<h3>Modified vertex/fragment shaders</h3>
+ 						<pre><code data-line-numbers="" class="language-glsl">/* Vertex shader when using CreateInfos. */
+void main() {
+	gl_Position = transform_matrix * in_position;
+	out_color = in_color;
+}</code></pre>
+						<pre><code data-line-numbers="" class="language-glsl">/* Fragment shader when using CreateInfos. */
+void main() {
+	fragColor = vec4(color, 1.0);
+}</code></pre>
+								
+					</section>
+							
+					<section>
+						<h3>ShaderBuilder</h3>
+						<ul>
+							<li>Tool that compiles all static shaders at compile time on all available backends.</li>
+							<li><pre><code>WITH_GPU_BUILDTIME_SHADER_BUILDER=On</code></pre></li>
+							<li>Quick turn around time during development.</li>
+						</ul>
+					</section>
+				</section>
+							
 				<section>
 					<section>
 						<h3>Immediate mode</h3>
@@ -343,44 +396,55 @@ immUnbindProgram();</code></pre>
 									<li>...</li>
 								</ul>
 							</li>
-							<li>Sub shading groups are a sub-group to reuse data that is already bound</li>
+							<li>Sub shading groups are a sub-group to reuse data/parameters that are already bound.</li>
 						</ul>
 					</section>
 
-					<section>
+					<!--section>
 						<h3>Draw Engines API</h3>
 						<ul>
 							<li>Init</li>
-							<li>Populate</li>
-							<li>Draw scene</li>
+							<li>Syncing</li>
+							<li>Draw viewport</li>
 						</ul>
 					</section>
 
 					<section>
 						<h3>DrawEngine:Init</h3>
+						<ul>
+							<li>Initialize framebuffers/render targets</li>
+						</ul>
 
 					</section>
 					<section>
-						<h3>DrawEngine:Populate</h3>
+						<h3>DrawEngine:Syncing</h3>
+						<ul>
+							<li>Used to initialize render passes and not object specific shading groups and draw commands.</li>
+							<li>Per object call to add geometry data to shading groups.</li>
+						</ul>
 
 					</section>
+
 					<section>
-						<h3>DrawEngine:DrawScene</h3>
-					</section>
+						<h3>DrawEngine:DrawViewport</h3>
+						<ul>
+						</ul>
+					</section-->
 
 					<section>
 						<h3>Compositing draw engines</h3>
 						<ul>
-							<li>There are 2 render targets</li>
+							<li>Result of the draw manager are 2 render render targets.</li>
 							<li>Color render target where most draw engines draw on (scene linear).</li>
 							<li>Overlay target used to draw UI controls on top of the draw engine (sRGB).</li>
-							<li>When applying color management the render targets are composited together with alpha over.</li>
+							<li>When copying to final buffer color management and compositing happens.</li>
 						</ul>
 					</section>
 
-					<section>
+					<section data-background-image="resources/drawmanager-workbench.png"></section>
+					<section data-background-image="resources/drawmanager-overlay.png"></section>
+					<section data-background-image="resources/drawmanager-composite.png"></section>
 
-					</section>
 				</section>
 
 
@@ -620,19 +684,25 @@ int set_normals(int flags, bool use)
 					</section>
 
 					<section>
-						<h3>Hotspot - profiling</h3>
-					</section>
-
-					<section>
-						<h3>Renderdoc</h3>
-					</section>
-
-					<section>
-						<h3>Compiler explorer</h3>
+						<h3>Renderdoc - GPU state analyzer/debugger</h3>
+						<h2>Demo</h2>
 					</section>
 				</section>
 
+				<!-- Module -->
+				<section>
+					<section data-background-image="resources/blender_gpu_viewport_projects.svg" data-background-size="contain">
+						<h3>Module Projects</h3>
+					</section>
 
+					<section>
+						<h3>Wanna join?</h3>
+						<h2>Join us at:</h2>
+						<ul>
+							<li><a href="https://blender.chat/channel/eevee-viewport-module">https://blender.chat/channel/eevee-viewport-module</a></li>
+						</ul>
+					</section>
+				</section>
 			</div>
 		</div>
 
