@@ -23,6 +23,10 @@
 			pre.large {
 				height:768px !important;
 			}
+
+			.hljs-comment {
+				color: powderblue;
+			}
 		</style>
 		<div class="reveal">
 			<div class="slides">
@@ -86,14 +90,14 @@
 								</ul>
 							</li>
 							<li>Each region has a draw callback</li>
-							<li>Draw callbacks are invoked when space are tagged for updating.</li>
+							<li>Draw callbacks are invoked when space are tagged to be updated.</li>
 							<li>Draw callbacks uses UI Components, GUI module or Draw Manager to do actual drawing.</li>
 						</ul>
 					</section>
 						
 					<section>
 						<h2>ED_spacetype_*</h2>
-						<pre class="large"><code data-line-numbers="|1-7, 19-20|11-12,16|13-15" class="language-c">void ED_spacetype_view3d()
+						<pre class="large"><code data-line-numbers="|1-7, 19-20|11-12,16|13-15" class="language-cpp" data-noescape>void ED_spacetype_view3d()
 {
   SpaceType *st = MEM_cnew<SpaceType>("spacetype view3d");
   ARegionType *art;
@@ -104,7 +108,7 @@
   ...
 
   /* regions: main window */
-  art = MEM_cnew<ARegionType>("spacetype view3d main region");
+  art = MEM_cnew<ARegionType/>("spacetype view3d main region");
   ...
   art->draw = view3d_main_region_draw;
   ...
@@ -132,21 +136,15 @@
 							<li>With immediate mode compatibility layer.</li>
 						</ul>
 					</section>
-
-					<section>
-						<h3>GPU backend</h3>
-						<ul>
-							<li></li>
-						</ul>
-					</section>
 				</section>
 
 				<section>
 					<section>
-						<h2>GPU Core profile</h2>
+						<h2>Core profile</h2>
 						<ul>
-							<li>Core profile is a 'new' API introduced with OpenGL 3.3</li>
-							<li>Deprecated older API, but still exists till today (immediate).</li>
+							<li>Core profile replaces OpenGL immediate mode</li>
+							<li>Introduced with OpenGL 3.3.</li>
+							<li>Immediate mode is deprecated in OpenGL, but still available.</li>
 							<li>CAD software didn't want to rewrite their code, but games want to use the new API.</li>
 							<li>Is a shader based approach
 								<ul>
@@ -169,17 +167,15 @@
 						<h3>Invoking a draw command</h3>
 						<ul>
 							<li>Render target (frame buffer)</li>
-							<li>Program (shader)</li>
+							<li>Program (simplified: 1 vertex and 1 fragment shader)</li>
 							<li>Geometry (Index/Vertex buffers)</li>
-							<li>Data required data to use shader (Textures, buffers)</li>
-							<li>Parameters</li>
+							<li>Data required data used in shader (Textures, buffers)</li>
+							<li>Shader parameters</li>
 							<li>Invoke a draw command</li>
 						</ul>
 					</section>
 
-					<section data-background-color="grey">
-						<img src="resources/graphics-pipeline.png" />
-					</section>
+					<section data-background-image="resources/graphics-pipeline.png" data-background-size="contain"></section>
 
 					<section>
 						<h3>Geometry - Vertex buffer</h3>
@@ -250,11 +246,20 @@ void main() {
 					</section>
 
 					<section data-background-image="resources/pipeline-split-triangle.png">
-						<h3>Rasterization</h3>
+						<h3>Rasterization: over-simplified</h3>
 						<ul>
-							<li>For each triangle</li>
-							<li>For each scanline, determine left most and right most values.</li>
-							<li>For each pixel between left/right most invoke the fragment shader</li>
+							<li>For each triangle:</li>
+							<ul>
+								<li>For each scanline:</li>
+								<ul>
+									<li>Determine left and right most values.</li>
+									<li>For each pixel between left/right most:</li>
+									<ul>
+										<li>Invoke fragment shader.</li>
+									</ul>
+								</ul>
+
+							</ul>
 						</ul>
 					</section>
 
@@ -290,17 +295,17 @@ void main() {
 					
 					<section>
 						<h3>CreateInfo</h3>
-						<pre><code data-line-numbers="|3|4-6,8-9|1|7,10|11" class="language-cpp">GPU_SHADER_INTERFACE_INFO(smooth_color_iface, "").smooth(Type::VEC4, "color");
+						<pre><code data-line-numbers="|3|4-5,8-9|1,6|7,10|11" class="language-cpp">GPU_SHADER_INTERFACE_INFO(smooth_color_iface, "").smooth(Type::VEC3, "color");
 
-							GPU_SHADER_CREATE_INFO(shader_3D_smooth_color)
-							.vertex_in(0, Type::VEC3, "in_position")
-    .vertex_in(1, Type::VEC4, "in_color")
-    .vertex_out(smooth_color_iface)
-    .fragment_out(0, Type::VEC4, "fragColor")
-    .push_constant(Type::MAT4, "transform_matrix")
-    .vertex_source("color_vert.glsl")
-    .fragment_source("color_frag.glsl")
-    .do_static_compilation(true);</code></pre>
+GPU_SHADER_CREATE_INFO(shader_3D_smooth_color)
+	.vertex_in(0, Type::VEC3, "in_position")
+	.vertex_in(1, Type::VEC3, "in_color")
+	.vertex_out(smooth_color_iface)
+	.fragment_out(0, Type::VEC4, "fragColor")
+	.push_constant(Type::MAT4, "transform_matrix")
+	.vertex_source("color_vert.glsl")
+	.fragment_source("color_frag.glsl")
+	.do_static_compilation(true);</code></pre>
 	<pre class="fragment"><code data-line-numbers class="language-cpp">GPUShader *shader = GPU_shader_create_from_info_name("shader_3D_smooth_color");</code></pre>
 					</section>
 					
@@ -334,9 +339,8 @@ void main() {
 						<ul>
 							<li>Compatibility layer mostly used to draw UI related elements.</li>
 							<li>Somewhat in between OpenGL immediate mode and core profile.</li>
-							<li>Need to work with shader pipelines</li>
+							<li>Uses shader pipelines</li>
 							<li>Provides a set of shaders to hide most complexity.</li>
-							<li>Function names follow supported opengl immediate mode functions.</li>
 						</ul>
 					</section>
 					<section>
@@ -361,8 +365,8 @@ immUnbindProgram();</code></pre>
 					<section>
 						<h2>DrawManager</h3>
 						<ul>
-							<li>Original designed to draw 3d viewport</li>
-							<li>Focussed on drawing performance</li>
+							<li>Original designed to draw 3d viewport.</li>
+							<li>Focussed on drawing performance.</li>
 							<li>Composite multiple draw engines
 								<ul>
 									<li>Eevee</li>
@@ -374,15 +378,15 @@ immUnbindProgram();</code></pre>
 									<li>Selection</li>
 								</ul>
 							</li>
-							<li>Also used to draw image editor/compositor background.</li>
+							<li>Currently also used to draw image editor/compositor background (Image engine).</li>
 						</ul>
 					</section>
 
-					<section>
+					<!-- section>
 						<h3>Performance</h3>
 						<ul>
-							<li>Programming model organized in passes, shading groups and sub groups to reduce context switches.</li>
-							<li>Passes include blending mode and GPU state changes
+							<li>Programming model organized in passes, sub passes to reduce context switches.</li>
+							<li>Passes contains a group of include blending mode and GPU state changes
 								<ul>
 									<li>Write to depth.</li>
 									<li>Depth tests.</li>
@@ -398,9 +402,9 @@ immUnbindProgram();</code></pre>
 							</li>
 							<li>Sub shading groups are a sub-group to reuse data/parameters that are already bound.</li>
 						</ul>
-					</section>
-
-					<!--section>
+					</section -->
+					
+					<section>
 						<h3>Draw Engines API</h3>
 						<ul>
 							<li>Init</li>
@@ -410,26 +414,86 @@ immUnbindProgram();</code></pre>
 					</section>
 
 					<section>
-						<h3>DrawEngine:Init</h3>
-						<ul>
-							<li>Initialize framebuffers/render targets</li>
-						</ul>
+						<h3>DrawEngine::init</h3>
+						<pre class="large"><code data-line-numbers="|3-4|6|7" class="language-cpp">class Instance {
+							
+	PassMain prepass_ps_ = {"Prepass"};
+	PassSimple shading_ps_ = {"Shading"};
+							
+	Manager *manager_ = nullptr;
+	GPUShader *shading_sh_ = nullptr;
 
+	...
+
+};</code></pre>
 					</section>
-					<section>
-						<h3>DrawEngine:Syncing</h3>
-						<ul>
-							<li>Used to initialize render passes and not object specific shading groups and draw commands.</li>
-							<li>Per object call to add geometry data to shading groups.</li>
-						</ul>
 
+					<section>
+						<h3>DrawEngine::begin_sync</h3>
+						<pre class="large"><code data-line-numbers="|7|8|9-10|11-12|13|14|16-19" class="language-cpp">class Instance {
+	
+	...
+
+	void begin_sync()
+	{
+		manager_ = DRW_manager_get();
+		prepass_ps_.init();
+		GPUShader *depth_sh = GPU_shader_get_builtin_shader(GPU_SHADER_3D_DEPTH_ONLY);
+		prepass_ps_.shader_set(depth_sh);
+		GPUTexture *depth_texture = DRW_viewport_texture_list_get()->depth;
+		prepass_ps_.bind_texture("depth_texture", depth_texture);
+		prepass_ps_.state_set(DRW_STATE_WRITE_DEPTH | DRW_STATE_DEPTH_GREATER);
+		prepass_ps_.clear_depth(1.0);
+						  
+		shading_ps_.init();
+		shading_ps_.shader_set(shading_sh_);
+		shading_ps_.state_set(DRW_STATE_WRITE_COLOR | DRW_STATE_DEPTH_ALWAYS);
+		shading_ps_.draw_procedural(GPU_PRIM_TRIS, 1, 3);
+	}
+
+	...
+
+};</code></pre>
 					</section>
 
 					<section>
-						<h3>DrawEngine:DrawViewport</h3>
-						<ul>
-						</ul>
-					</section-->
+						<h3>DrawEngine::object_sync</h3>
+						<pre class="large"><code data-line-numbers="|7-10|12-13|15" class="language-cpp">class Instance {
+	
+	...
+
+	void object_sync(Object *ob)
+	{
+		GPUBatch *geometry = DRW_cache_object_surface_get(ob);
+		if (!geometry) {
+			return;
+		}
+  
+		ObjectRef ob_ref = DRW_object_ref_get(ob);
+		ResourceHandle res_handle = manager_->resource_handle(ob_ref);
+  
+		prepass_ps_.draw(geometry, res_handle);
+	}
+	
+	...
+
+};</code></pre>
+					</section>
+
+					<section>
+						<h3>DrawEngine::draw_viewport</h3>
+						<pre class="large"><code data-line-numbers="" class="language-cpp">class Instance {
+	
+	...
+
+	void draw_viewport()
+	{
+	  View view("main_view", DRW_view_default_get());
+	  manager_->submit(prepass_ps_, view);
+	  manager_->submit(shading_ps_, view);
+	}
+};</code></pre>
+					</section>
 
 					<section>
 						<h3>Compositing draw engines</h3>
@@ -448,7 +512,7 @@ immUnbindProgram();</code></pre>
 				</section>
 
 
-				<section>
+				<!--section>
 					<section>
 						<h2>Performance</h2>
 					</section>
@@ -499,7 +563,7 @@ immUnbindProgram();</code></pre>
 }</code></pre>
 					</section>
 
-				</section>
+				</section -->
 				<section>
 					
 					<section>
@@ -560,7 +624,7 @@ immUnbindProgram();</code></pre>
 						</ul>
 					</section>
 
-					<section>
+					<!--section>
 						<h3>Data encoding - barycentric coordinates</h3>
 						<pre class="large"><code data-line-numbers="|9-12|14-17" class="language-glsl">/* 
  * The 3 components of a barycentric coordinate always adds
@@ -602,10 +666,10 @@ int set_normals(int flags, bool use)
 {
 	return (flags & ~FLAG_NORMAL) | (use ? FLAG_NORMAL : 0); 
 }</code></pre>
-				</section>
+				</section-->
 				</section>
 
-				<section>
+				<!-- section>
 					<section>
 						<h2>Branching</h2>
 					</section>
@@ -675,7 +739,7 @@ int set_normals(int flags, bool use)
 	return __result;
 }</code></pre>
 					</section>
-				</section>
+				</section-->
 
 				<!-- Tools -->
 				<section>
