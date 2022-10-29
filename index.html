@@ -31,19 +31,31 @@
 		<div class="reveal">
 			<div class="slides">
 				<section>
-					<h1>Blender Eevee/Viewport module</h1>
-					<h2>GPU development onboarding</h2>
-					<p>Jeroen Bakker - jeroen@blender.org</p>
-				</section>
+					<section>
+						<h1>Blender Eevee/Viewport module</h1>
+						<h2>GPU development onboarding</h2>
+						<p>Jeroen Bakker - jeroen@blender.org</p>
+					</section>
 
-				<section>
-					<h2>Introduction</h2>
-					<ul>
-						<li>What happens between frames.</li>
-						<li>GPU module</li>
-						<li>Draw manager/engines</li>
-						<li>Debugging</li>
-					</ul>
+					<section>
+						<h2>Target Audience</h2>
+						<ul>
+							<li>Artist.</li>
+							<li>Starting Developers.</li>
+							<li>Triagers.</li>
+							<li>Blender Developers.</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Introduction</h2>
+						<ul>
+							<li>What happens between frames.</li>
+							<li>GPU module</li>
+							<li>Draw manager/engines</li>
+							<li>Debugging</li>
+						</ul>
+					</section>
 				</section>
 
 				<section>
@@ -142,16 +154,16 @@
 					<section>
 						<h2>Core profile</h2>
 						<ul>
-							<li>Core profile replaces OpenGL immediate mode</li>
-							<li>Introduced with OpenGL 3.3.</li>
-							<li>Immediate mode is deprecated in OpenGL, but still available.</li>
-							<li>CAD software didn't want to rewrite their code, but games want to use the new API.</li>
 							<li>Is a shader based approach
 								<ul>
 									<li>Vertex shader</li>
 									<li>Fragment shader</li>
 								</ul>
 							</li>
+							<li>Core profile replaces OpenGL immediate mode</li>
+							<li>Introduced with OpenGL 3.3.</li>
+							<li>Immediate mode is deprecated in OpenGL, but still available.</li>
+							<li>CAD software didn't want to rewrite their code, but games want to use the new API.</li>
 						</ul>
 					</section>
 
@@ -170,7 +182,7 @@
 							<li>Program (simplified: 1 vertex and 1 fragment shader)</li>
 							<li>Geometry (Index/Vertex buffers)</li>
 							<li>Data required data used in shader (Textures, buffers)</li>
-							<li>Shader parameters</li>
+							<li>Shader parameters (Global Uniforms)</li>
 							<li>Invoke a draw command</li>
 						</ul>
 					</section>
@@ -195,7 +207,7 @@
 					
 					<section>
 						<h3>Example vertex shader</h3>
-						<pre><code data-line-numbers="|1-3|5-6|11-15|8-9|" class="language-glsl">/* Data read from geometry buffers. */
+						<pre><code data-line-numbers="|1-3|5-6|11-15|8-9" class="language-glsl">/* Data read from geometry buffers. */
 in vec3 in_position;
 in vec3 in_color;
 							
@@ -246,7 +258,7 @@ void main() {
 					</section>
 
 					<section data-background-image="resources/pipeline-split-triangle.png">
-						<h3>Rasterization: over-simplified</h3>
+						<h3>Rasterization: (*over-simplified)</h3>
 						<ul>
 							<li>For each triangle:</li>
 							<ul>
@@ -288,8 +300,7 @@ void main() {
 						<ul>
 							<li>Shader languages aren't standardized across GPU backends</li>
 							<li>Vulkan GSLS != OpenGL GLSL != MSL</li>
-							<li>CreateInfo is a definition of a shader program</li>
-							<li>Goal is to overcome these limitations</li>
+							<li>CreateInfo was introduced to contain a definition where differences are.</li>
 						</ul>
 					</section>
 					
@@ -344,7 +355,8 @@ void main() {
 						</ul>
 					</section>
 					<section>
-						<pre class="large"><code data-line-numbers="|1-2|4-5, 14|7-12" class="language-c">GPUVertFormat *format = immVertexFormat();
+						<h3>GPU Module immediate mode</h3>
+						<pre><code data-line-numbers="|1-2|4-5, 14|7-12" class="language-c">GPUVertFormat *format = immVertexFormat();
 uint pos = GPU_vertformat_attr_add(format, "pos", GPU_COMP_F32, 2, GPU_FETCH_FLOAT);
 
 immBindBuiltinProgram(GPU_SHADER_3D_UNIFORM_COLOR);
@@ -358,6 +370,10 @@ immVertex2f(pos, cx - cross_size, cy + cross_size);
 immEnd();
 
 immUnbindProgram();</code></pre>
+<ul class="fragment">
+	<li>Internally groups multiple drawing calls.</li>
+	<li class="fragment">Consideration: What is the overhead to upload larger amount of data each time.</li>
+</ul>
 					</section>
 				</section>
 
@@ -365,7 +381,8 @@ immUnbindProgram();</code></pre>
 					<section>
 						<h2>DrawManager</h3>
 						<ul>
-							<li>Original designed to draw 3d viewport.</li>
+							<li>Introduced in Blender 2.8.</li>
+							<li>Designed to draw 3d viewport.</li>
 							<li>Focussed on drawing performance.</li>
 							<li>Composite multiple draw engines
 								<ul>
