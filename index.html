@@ -30,13 +30,122 @@
 		</style>
 		<div class="reveal">
 			<div class="slides">
+				<!-- ### TITLE ### -->
 				<section>
 					<section>
-						<h1>Blender Eevee/Viewport module</h1>
-						<h2>GPU development onboarding</h2>
-						<p>Jeroen Bakker - jeroen@blender.org</p>
+						<h1>A Day In The Life Of A Graphics Programmer</h1>
+						<h2>Jeroen Bakker - jeroen@blender.org</h2>
+					</section>
+				</section>
+
+				<!-- ### BLENDER ### -->
+				<section>
+					<section>
+						<h1>What is Blender?</h1>
 					</section>
 
+					<section>
+						<!--h2>Our mission</h2-->
+						<h1>Get the world's best 3D CG technology in the hands of artists as free/open source software.</h1>
+					</section>
+
+					<section>
+						<h2>Open Source?</h2>
+						<ul>
+							<li>Community driven</li>
+							<li>Since 2002 under a GPL v2+ license.</li>
+							<li>3-4 mayor releases per year.</li>
+							<li>Mainly written in C/C++/Python</li>
+							<li>Free for anyone to participate</li>
+						</ul>
+					</section>
+				</section>
+
+				<!-- ### OPEN MOVIES ### -->
+				<section>
+					<section>
+						<h2>And we are also making price awarding</h2>
+						<h1>open movies!</h1>
+					</section>
+					<section>
+						<h2>Blender Studio</h2>
+						<ul>
+							<li>Create movies/technical demos to push the boundaries of Blender.</li>
+							<li>Artists use master (development) branch of Blender.</li>
+							<li>High quality tutorials.</li>
+							<li><b>Everything</b> is released as Open Content.</li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>2006 - Elephant dreams</li>
+							<li>2008 - Big Buck Bunny</li>
+							<li>2010 - Sintel</li>
+							<li>2012 - Tears of Steel</li>
+							<li>2013 - Caminandes: Grand Dillama</li>
+							<li>2015 - Cosmos Laudromat</li>
+							<li>2015 - Glass Half</li>
+							<li>2016 - Caminandes: Llamigos</li>
+							<li>2017 - Agent 327</li>
+							<li>2017 - Daily Dweeps</li>
+							<li>2018 - Hero</li>
+							<li>2019 - Spring</li>
+							<li>2020 - Coffee Run</li>
+							<li>2020 - Settlers</li>
+							<li>2021 - Sprite Fright</li>
+							<li>2022 - Project Heist</li>
+						</ul>
+					</section>
+				</section>
+
+				<!-- ### SPRITE FRIGHT DEMO REEL ### -->
+				<section>
+					<section data-background-video="resources/sprite-freight-demo-reel.mp4"></section>
+				</section>
+
+				<!-- ### WHO AM I ### -->
+				<section>
+					<section>
+						<h2>What about me?</h2>
+						<ul>
+							<li>Full time developer at Blender.</li>
+							<li>Module owner of: Eevee/viewport, XR, Compositing</li>
+							<li>Platform support</li>
+							<li>Developing: Painting, Images/Movies, Performance and Color.</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>How did I got involved?</h2>
+						<ul>
+							<li>As youngster I always pushed limits of computers.</li>
+							<li>In 2008 found a new hobby! Blender Open source development.</li>
+							<li>Contributed stuff
+								<ul>
+									<li>Documented blend file format</li>
+									<li>Usability improvements in node editor</li>
+									<li>GPU enabled compositor.</li>
+								</ul>
+							</li>
+							<li>Always active in the community.</li>
+							<li>Blender 2.8 was asked to re-write the viewport (OpenGL 3.3 Core profile)</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>What drives me?</h2>
+						<ul>
+							<li>By improving performance find new workflows or removing boundaries.</li>
+							<li>Most projects has a large GPU component</li>
+						</ul>
+					</section>
+
+					<section data-background-video="resources/viewport-compositing.mp4"></section>
+				</section>
+
+
+				<!-- ### INDEX ### -->
+				<section data-visibility="hidden">
 					<section>
 						<h2>Target Audience</h2>
 						<ul>
@@ -58,6 +167,7 @@
 					</section>
 				</section>
 
+				<!-- ### BETWEEN FRAMES ### -->
 				<section>
 					<section>
 						<h2>Between frames</h2>
@@ -90,7 +200,7 @@
 }</code></pre>
 					</section>
 
-					<section>
+					<section data-visibility="hidden">
 						<h3>Editor drawing</h3>
 						<ul>
 							<li>Editors have multiple regions
@@ -107,7 +217,7 @@
 						</ul>
 					</section>
 						
-					<section>
+					<section data-visibility="hidden">
 						<h2>ED_spacetype_*</h2>
 						<pre class="large"><code data-line-numbers="|1-7, 19-20|11-12,16|13-15" class="language-cpp" data-noescape>void ED_spacetype_view3d()
 {
@@ -132,8 +242,8 @@
 					</section>
 				</section>
 
-				<section>
-				
+				<!-- ### GPU MODULE ### -->
+				<section data-visibility="hidden">
 					<section>
 						<h2>GPU module</h2>
 						<ul>
@@ -145,13 +255,18 @@
 								</ul>
 							</li>
 							<li>Based on core profile.</li>
-							<li>With immediate mode compatibility layer.</li>
+							<li data-visibility="hidden">With immediate mode compatibility layer.</li>
 						</ul>
 					</section>
 				</section>
 
+				<!-- ### CORE PROFILE ### -->
 				<section>
 					<section>
+						<h2>Graphics pipeline</h2>
+					</section>
+
+					<section data-visibility="hidden">
 						<h2>Core profile</h2>
 						<ul>
 							<li>Is a shader based approach
@@ -176,7 +291,7 @@
 					</section>
 					
 					<section>
-						<h3>Invoking a draw command</h3>
+						<h3>Steps to draw something on the screen</h3>
 						<ul>
 							<li>Render target (frame buffer)</li>
 							<li>Program (simplified: 1 vertex and 1 fragment shader)</li>
@@ -293,8 +408,8 @@ void main() {
 					</section>
 				</section>
 
-				<section>
-
+				<!-- ### BACKEND COMPATIBILITY ### -->
+				<section data-visibility="hidden">
 					<section>
 						<h3>Compatibility</h3>
 						<ul>
@@ -344,7 +459,8 @@ void main() {
 					</section>
 				</section>
 							
-				<section>
+				<!-- ### IMMEDIATE MODE ### -->
+				<section data-visibility="hidden">
 					<section>
 						<h3>Immediate mode</h3>
 						<ul>
@@ -377,7 +493,8 @@ immUnbindProgram();</code></pre>
 					</section>
 				</section>
 
-				<section>
+				<!-- ### DRAW MANAGER ### -->
+				<section data-visibility="hidden">
 					<section>
 						<h2>DrawManager</h3>
 						<ul>
@@ -528,8 +645,10 @@ immUnbindProgram();</code></pre>
 
 				</section>
 
+				<section data-background-video="resources/eevee.mp4"></section>
 
-				<!--section>
+				<!-- ### PERFORMANCE ### -->
+				<section>
 					<section>
 						<h2>Performance</h2>
 					</section>
@@ -580,9 +699,11 @@ immUnbindProgram();</code></pre>
 }</code></pre>
 					</section>
 
-				</section -->
-				<section>
-					
+				</section>
+
+
+				<!-- ### HARDWARE ### -->
+				<section>	
 					<section>
 						<h2>Hardware</h2>
 						<h3 class="fragment">Theoretical</h3>
@@ -636,7 +757,7 @@ immUnbindProgram();</code></pre>
 						</ul>
 					</section>
 
-					<!--section>
+					<section>
 						<h3>Data encoding - barycentric coordinates</h3>
 						<pre class="large"><code data-line-numbers="|9-12|14-17" class="language-glsl">/* 
  * The 3 components of a barycentric coordinate always adds
@@ -678,10 +799,11 @@ int set_normals(int flags, bool use)
 {
 	return (flags & ~FLAG_NORMAL) | (use ? FLAG_NORMAL : 0); 
 }</code></pre>
-				</section-->
+				</section>
 				</section>
 
-				<!-- section>
+				<!-- ### BRANCHING ### -->
+				<section>
 					<section>
 						<h2>Branching</h2>
 					</section>
@@ -751,15 +873,34 @@ int set_normals(int flags, bool use)
 	return __result;
 }</code></pre>
 					</section>
-				</section-->
+				</section>
 
-				<!-- Tools -->
+				<!-- ### PROJECT HEIST ### -->
+				<section>
+					<section data-background-video="resources/heist.v045.mp4">
+					</section>
+
+					<section>
+						<h1>Project Heist</h1>
+						<ul>
+							<li>Short animation</li>
+							<li>Blender Animation Studio</li>
+							<li>"Less story, more impact"</li>
+							<li>Created with only Open Source Software</li>
+							<li>Rendered using Eevee render engine.</li>
+							<li>Currently finalizing and expected to be released in a few weeks.</li>
+							<li>Check <a href="https://www.youtube.com/@BlenderStudio">www.youtube.com/@BlenderStudio</a></li>
+						</ul>
+					</section>
+				</section>
+
+				<!-- ### DEBUGGING ### -->
 				<section>
 					<section>
 						<h1>Tooling</h1>
 					</section>
 
-					<section>
+					<section data-visibility="hidden">
 						<h3>System info.txt</h3>
 					</section>
 
@@ -769,8 +910,8 @@ int set_normals(int flags, bool use)
 					</section>
 				</section>
 
-				<!-- Module -->
-				<section>
+				<!-- ### MODULE ### -->
+				<section data-visibility="hidden">
 					<section data-background-image="resources/blender_gpu_viewport_projects.svg" data-background-size="contain">
 						<h3>Module Projects</h3>
 					</section>
@@ -782,6 +923,28 @@ int set_normals(int flags, bool use)
 							<li><a href="https://blender.chat/channel/eevee-viewport-module">https://blender.chat/channel/eevee-viewport-module</a></li>
 						</ul>
 					</section>
+				</section>
+
+				<!-- ### JOIN US ### -->
+				<section>
+					<section>
+						<h1>Join us</h1>
+						<p><a href="https://www.blender.org/get-involved/">www.blender.org/get-involved/</a></p>
+					</section>
+
+					<section>
+						<h2>Google summer of code</h2>
+						<ul>
+							<li>Google Summer of Code is a global, online program focused on bringing new contributors into open source software development. GSoC Contributors work with an open source organization on a 12+ week programming project under the guidance of mentors. </li>
+							<li>Contributors has to propose a project</li>
+							<li>Accepted contributors will spend a summer of coding with guidance from a mentor</li>
+							<li><a href="https://summerofcode.withgoogle.com/">summerofcode.withgoogle.com</a></li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section><h1>?</h1></section>
 				</section>
 			</div>
 		</div>
@@ -803,7 +966,6 @@ int set_normals(int flags, bool use)
 				autoPlayMedia: true,
 				width: 1920,
 				height: 1080,
-
 			});
 		</script>
 	</body>
