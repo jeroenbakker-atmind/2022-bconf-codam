@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>Onboarding Eevee/Viewport module</title>
+		<title>A day in life of a graphics/GPU programmer</title>
 
 		<link rel="stylesheet" href="dist/reset.css">
 		<link rel="stylesheet" href="dist/reveal.css">
@@ -33,7 +33,7 @@
 				<!-- ### TITLE ### -->
 				<section>
 					<section>
-						<h1>A Day In The Life Of A Graphics Programmer</h1>
+						<h1>A Day In The Life Of A Graphics/GPU Programmer</h1>
 						<h2>Jeroen Bakker - jeroen@blender.org</h2>
 					</section>
 				</section>
@@ -42,6 +42,7 @@
 				<section>
 					<section>
 						<h1>What is Blender?</h1>
+						<h3 class="fragment">Blender is the open-source content creation suite.</h3>
 					</section>
 
 					<section>
@@ -54,7 +55,7 @@
 						<ul>
 							<li>Community driven</li>
 							<li>Since 2002 under a GPL v2+ license.</li>
-							<li>3-4 mayor releases per year.</li>
+							<li>3-4 major releases per year.</li>
 							<li>Mainly written in C/C++/Python</li>
 							<li>Free for anyone to participate</li>
 						</ul>
@@ -93,14 +94,15 @@
 							<li>2020 - Coffee Run</li>
 							<li>2020 - Settlers</li>
 							<li>2021 - Sprite Fright</li>
-							<li>2022 - Project Heist</li>
+							<li>2022 - Charge (*)</li>
 						</ul>
 					</section>
 				</section>
 
 				<!-- ### SPRITE FRIGHT DEMO REEL ### -->
 				<section>
-					<section data-background-video="resources/sprite-freight-demo-reel.mp4"></section>
+					<section data-background-image="resources\sprite-fright.jpg"></section>
+					<section data-background-video="resources\sprite-fright-demo-reel.mp4"></section>
 				</section>
 
 				<!-- ### WHO AM I ### -->
@@ -118,7 +120,7 @@
 					<section>
 						<h2>How did I got involved?</h2>
 						<ul>
-							<li>As youngster I always pushed limits of computers.</li>
+							<li>As teenager I always pushed limits of computers.</li>
 							<li>In 2008 found a new hobby! Blender Open source development.</li>
 							<li>Contributed stuff
 								<ul>
@@ -135,8 +137,8 @@
 					<section>
 						<h2>What drives me?</h2>
 						<ul>
-							<li>By improving performance find new workflows or removing boundaries.</li>
-							<li>Most projects has a large GPU component</li>
+							<li>By <b>improving performance</b> find new workflows or removing boundaries.</li>
+							<li>Most projects has a large <b>GPU</b> component</li>
 						</ul>
 					</section>
 
@@ -645,7 +647,10 @@ immUnbindProgram();</code></pre>
 
 				</section>
 
-				<section data-background-video="resources/eevee.mp4"></section>
+				<section>
+					<section><h1>Do this a lot and you get...</h1></section>
+					<section data-background-video="resources/eevee.mp4"></section>
+				</section>
 
 				<!-- ### PERFORMANCE ### -->
 				<section>
@@ -659,6 +664,9 @@ immUnbindProgram();</code></pre>
 							<li>X86 has ten-thousands instructions. <a href="https://en.wikipedia.org/wiki/X86_instruction_listings">https://en.wikipedia.org/wiki/X86_instruction_listings</a></li>
 							<li class="fragment">GPUs (depending on platform) several hundreds.</li>
 							<li class="fragment">Not standardized</li>
+							<li class="fragment">CPU each core (4-32) can run a different code.</li>
+							<li class="fragment">GPU each core (4096-16384) has to run the same code.</li>
+							<li class="fragment">Most of the time also needs to be at the same instruction.</li>
 							<li class="fragment">SIMD: Single Instruction Multiple Data</li>
 						</ul>
 					</section>
@@ -875,21 +883,75 @@ int set_normals(int flags, bool use)
 					</section>
 				</section>
 
-				<!-- ### PROJECT HEIST ### -->
 				<section>
-					<section data-background-video="resources/heist.v045.mp4">
+					<section>
+						<h2>CPU Branching prediction</h2>
 					</section>
 
 					<section>
-						<h1>Project Heist</h1>
+						<pre class="large"><code data-line-numbers="" class="language-cpp">void branch_test(int input_data[], size_t input_data_len) {
+    for (int i = 0 ; i < input_data_len ; i ++) {
+		if (iseven(input_data[i])) {
+			/* Do something complex. */
+		}
+		else {
+			/* Do something else complex. */
+		}
+	}
+}</code></pre>
+					</section>
+					<section>
+						<pre class="large"><code data-line-numbers="" class="language-cpp">void branch_test(int input_data[], size_t input_data_len) {
+	int_list even_values;
+	int_list uneven_values;
+
+    for (int i = 0 ; i < input_data_len ; i ++) {
+		if (iseven(input_data[i])) {
+			/* Add to even_values. */
+		}
+		else {
+			/* Add to uneven_values. */
+		}
+	}
+
+	for (int &even_value: even_values) {
+		/* Do something complex. */
+	}
+	for (int &uneven_value: uneven_values) {
+		/* Do something else complex. */
+	}
+}</code></pre>
+					</section>
+
+					<section>
+						<h3>Wanna learn more!</h3>
 						<ul>
-							<li>Short animation</li>
+							<li>I just scratched the surface.</li>
+							<li>Check out data-oriented-design (DoD) or follow Mike Acton.</li>
+						</ul>
+					</section>
+				</section>
+
+				<!-- ### PROJECT HEIST ### -->
+				<section>
+					<section>
+						<h1>Charge</h1>
+					</section>
+
+					<section data-background-video="resources/charge-1m.mp4"></section>
+					
+					<section>
+						<h1>Charge</h1>
+						<ul>
 							<li>Blender Animation Studio</li>
 							<li>"Less story, more impact"</li>
+							<li>4 minutes action packed animation tech-demo.</li>
 							<li>Created with only Open Source Software</li>
-							<li>Rendered using Eevee render engine.</li>
-							<li>Currently finalizing and expected to be released in a few weeks.</li>
-							<li>Check <a href="https://www.youtube.com/@BlenderStudio">www.youtube.com/@BlenderStudio</a></li>
+							<li class="fragment">Realistic visuals and animations.</li>
+							<li class="fragment">Developed new hair system.</li>
+							<li class="fragment">Using Eevee, real-time render engine based on game engine technology.</li>
+							<li class="fragment">Currently finalizing and expected to be released in a few weeks.</li>
+							<li class="fragment">Check <a href="https://www.youtube.com/@BlenderStudio">www.youtube.com/@BlenderStudio</a></li>
 						</ul>
 					</section>
 				</section>
@@ -902,6 +964,11 @@ int set_normals(int flags, bool use)
 
 					<section data-visibility="hidden">
 						<h3>System info.txt</h3>
+					</section>
+
+					<section>
+						<h3>Quickbench - Insights - Compiler Explorer - Build bench</h3>
+						<h2><a href="https://quick-bench.com/" target="_blank">quick-bench.com</a></h2>
 					</section>
 
 					<section>
@@ -962,6 +1029,8 @@ int set_normals(int flags, bool use)
 
 				// Learn about plugins: https://revealjs.com/plugins/
 				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ],
+
+				slideNumber: true,
 
 				autoPlayMedia: true,
 				width: 1920,
